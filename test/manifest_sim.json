@@ -1,0 +1,8 @@
+{"max_cores": 144, 
+ "tasks": [{"id": "Decode", "number_of_cores": 112, "name": "Decode", "execution_cmd": "python ./Decode.py", "runtime_limit": 480, "runtime_sim": 120 },
+           {"id": "Hello", "number_of_cores": 144, "name": "Hello", "execution_cmd": "python ./Hello.py", "runtime_limit": 480, "runtime_sim": 100}], 
+ "resource_steps": [{"num_cores": 112, "end_time": 480}, 
+                    {"num_cores": 144, "end_time": 960}], 
+ "total_runtime": 960,
+ "dot_dag": "digraph \"Hello World BATCH ParallelSeq\"\n{\nrankdir=LR bgcolor=white compound=true node[fontColor=white fontname=halvetica]\n\nsubgraph cluster_0 {label=\"Fast Decoding\"  fontcolor=black; color=black;\nDecode [fontcolor=white shape=ellipse label=\"Decode\" style=filled fillcolor=royalblue4]\n\n}\nsubgraph cluster_1 {label=\"Hello World\"  fontcolor=black; color=black;\nHello [fontcolor=white shape=ellipse label=\"Hello\" style=filled fillcolor=royalblue4]\n\n}\n\nDecode -> Hello [color=black]\n}"
+}

@@ -1,0 +1,77 @@
+{
+  "max_cores": 240,
+  "tasks": [
+    {
+      "name": "S0",
+      "execution_cmd": "./S0.py",
+      "number_of_cores": 240,
+      "runtime_limit": 3600.0,
+      "runtime_sim": 3500.0,
+      "id": "S0"
+    },
+    {
+      "name": "S1",
+      "execution_cmd": "./S1.py",
+      "number_of_cores": 240,
+      "runtime_limit": 3600.0,
+      "runtime_sim": 3500.0,
+      "id": "S1"
+    },
+    {
+      "name": "S2",
+      "execution_cmd": "./S2.py",
+      "number_of_cores": 240,
+      "runtime_limit": 3600.0,
+      "runtime_sim": 3500.0,
+      "id": "S2"
+     } ,
+    {
+      "name": "S3",
+      "execution_cmd": "./S3.py",
+      "number_of_cores": 240,
+      "runtime_limit": 3600.0,
+      "runtime_sim": 3500.0,
+      "id": "S3"
+     },
+    {
+      "name": "S4",
+      "execution_cmd": "./S4.py",
+      "number_of_cores": 240,
+      "runtime_limit": 3600.0,
+      "runtime_sim": 3500.0,
+      "id": "S4"
+    },
+    {
+      "name": "S5",
+      "execution_cmd": "./S5.py",
+      "number_of_cores": 240,
+      "runtime_limit": 3600.0,
+      "runtime_sim": 3500.0,
+      "id": "S5"
+    },
+    {
+      "name": "S6",
+      "execution_cmd": "./S6.py",
+      "number_of_cores": 240,
+      "runtime_limit": 3600.0,
+      "runtime_sim": 3500.0,
+      "id": "S6"
+    },
+    {
+      "name": "S7",
+      "execution_cmd": "./S7.py",
+      "number_of_cores": 240,
+      "runtime_limit": 3600.0,
+      "runtime_sim": 3500.0,
+      "id": "S7"
+    } 
+  ],
+  "total_runtime": 28800.0,
+  "resource_steps": [
+    {
+      "num_cores": 240,
+      "end_time": 28800.0
+    }
+  ],
+  "dot_dag": "strict digraph  {\n\tS0->S1;\n\tS1->S2;\n\tS2->S3\n\tS3->S4\n\tS4->S5\n\tS5->S6\n\tS6->S7\n}\n"
+}

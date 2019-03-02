@@ -1,0 +1,26 @@
+--- sim_trace.c	2017-09-13 09:54:57.000000000 -0700
++++ sim_trace.c.ref	2017-09-13 09:52:30.000000000 -0700
+@@ -3,7 +3,6 @@
+ #include <stdio.h>
+ #include <unistd.h>
+ #include <string.h>
+-#include "src/common/xmalloc.h"
+ 
+ 
+ char* read_file(char *file_name) {
+@@ -43,12 +42,13 @@
+ 	if (!ret_val)
+ 		return ret_val;
+ 	if (job_trace->manifest_filename[0]!='|') {
+-		char *file_name_copy=xstrdup(job_trace->manifest_filename);
++		char *file_name_copy=malloc(strlen(job_trace->manifest_filename));
++		strcpy(file_name_copy, job_trace->manifest_filename);
+ 		char *real_file_name=strtok(file_name_copy,"-");
+ 		if (!real_file_name)
+ 			real_file_name=job_trace->manifest_filename;
+ 		job_trace->manifest = read_file(real_file_name);
+-		xfree(file_name_copy);
++		free(file_name_copy);
+ 		if (job_trace->manifest == NULL) {
+ 			printf("Missing manifest file!! %s\n",
+ 					real_file_name);

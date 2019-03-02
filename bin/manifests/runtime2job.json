@@ -1,0 +1,29 @@
+{
+  "max_cores": 240,
+  "tasks": [
+    {
+      "name": "S0",
+      "execution_cmd": "./S0.py",
+      "number_of_cores": 240,
+      "runtime_limit": 3600.0,
+      "runtime_sim": 3500.0,
+      "id": "S0"
+    },
+    {
+      "name": "S1",
+      "execution_cmd": "./S1.py",
+      "number_of_cores": 240,
+      "runtime_limit": 3600.0,
+      "runtime_sim": 3500.0,
+      "id": "S1"
+     } 
+  ],
+  "total_runtime": 7200.0,
+  "resource_steps": [
+    {
+      "num_cores": 240,
+      "end_time": 7200.0
+    }
+  ],
+  "dot_dag": "strict digraph  {\n\tS0->S1;\n}\n"
+}

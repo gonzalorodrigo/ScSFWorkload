@@ -1,0 +1,171 @@
+{
+  "max_cores": 912,
+  "tasks": [
+    {
+      "id": "Decode",
+      "number_of_cores": 48,
+      "name": "Decode",
+      "execution_cmd": "python ./Decode15.py",
+      "runtime_limit": 30
+    },
+    {
+      "id": "Decode#2",
+      "number_of_cores": 48,
+      "name": "Decode",
+      "execution_cmd": "python ./Decode15.py",
+      "runtime_limit": 30
+    },
+    {
+      "id": "Decode#6",
+      "number_of_cores": 48,
+      "name": "Decode",
+      "execution_cmd": "python ./Decode15.py",
+      "runtime_limit": 30
+    },
+    {
+      "id": "Decode#18",
+      "number_of_cores": 48,
+      "name": "Decode",
+      "execution_cmd": "python ./Decode15.py",
+      "runtime_limit": 30
+    },
+    {
+      "id": "Decode#17",
+      "number_of_cores": 48,
+      "name": "Decode",
+      "execution_cmd": "python ./Decode15.py",
+      "runtime_limit": 30
+    },
+    {
+      "id": "Decode#16",
+      "number_of_cores": 48,
+      "name": "Decode",
+      "execution_cmd": "python ./Decode15.py",
+      "runtime_limit": 30
+    },
+    {
+      "id": "Decode#15",
+      "number_of_cores": 48,
+      "name": "Decode",
+      "execution_cmd": "python ./Decode15.py",
+      "runtime_limit": 30
+    },
+    {
+      "id": "Decode#14",
+      "number_of_cores": 48,
+      "name": "Decode",
+      "execution_cmd": "python ./Decode15.py",
+      "runtime_limit": 30
+    },
+    {
+      "id": "Decode#13",
+      "number_of_cores": 48,
+      "name": "Decode",
+      "execution_cmd": "python ./Decode15.py",
+      "runtime_limit": 30
+    },
+    {
+      "id": "Decode#12",
+      "number_of_cores": 48,
+      "name": "Decode",
+      "execution_cmd": "python ./Decode15.py",
+      "runtime_limit": 30
+    },
+    {
+      "id": "Decode#11",
+      "number_of_cores": 48,
+      "name": "Decode",
+      "execution_cmd": "python ./Decode15.py",
+      "runtime_limit": 30
+    },
+    {
+      "id": "Decode#10",
+      "number_of_cores": 48,
+      "name": "Decode",
+      "execution_cmd": "python ./Decode15.py",
+      "runtime_limit": 30
+    },
+    {
+      "id": "Decode#9",
+      "number_of_cores": 48,
+      "name": "Decode",
+      "execution_cmd": "python ./Decode15.py",
+      "runtime_limit": 30
+    },
+    {
+      "id": "Decode#8",
+      "number_of_cores": 48,
+      "name": "Decode",
+      "execution_cmd": "python ./Decode15.py",
+      "runtime_limit": 30
+    },
+    {
+      "id": "Decode#3",
+      "number_of_cores": 48,
+      "name": "Decode",
+      "execution_cmd": "python ./Decode15.py",
+      "runtime_limit": 30
+    },
+    {
+      "id": "world",
+      "number_of_cores": 48,
+      "name": "world",
+      "execution_cmd": "python ./world.py",
+      "runtime_limit": 30
+    },
+    {
+      "id": "Decode#1",
+      "number_of_cores": 48,
+      "name": "Decode",
+      "execution_cmd": "python ./Decode15.py",
+      "runtime_limit": 30
+    },
+    {
+      "id": "Decode#7",
+      "number_of_cores": 48,
+      "name": "Decode",
+      "execution_cmd": "python ./Decode15.py",
+      "runtime_limit": 30
+    },
+    {
+      "id": "Hello",
+      "number_of_cores": 48,
+      "name": "Hello",
+      "execution_cmd": "python ./Hello.py",
+      "runtime_limit": 30
+    },
+    {
+      "id": "Decode#5",
+      "number_of_cores": 48,
+      "name": "Decode",
+      "execution_cmd": "python ./Decode15.py",
+      "runtime_limit": 30
+    },
+    {
+      "id": "Decode#4",
+      "number_of_cores": 48,
+      "name": "Decode",
+      "execution_cmd": "python ./Decode15.py",
+      "runtime_limit": 30
+    },
+    {
+      "id": "Salutation",
+      "number_of_cores": 48,
+      "name": "Salutation",
+      "execution_cmd": "python ./Salutation.py",
+      "runtime_limit": 30
+    }
+  ],
+  "resource_steps": [
+    {
+      "num_cores": 912,
+      "end_time": 30
+    },
+    {
+      "num_cores": 48,
+      "end_time": 120
+    }
+  ],
+  "total_runtime": 120,
+  "dot_dag": "digraph \"Hello World BATCH ParallelSeq\"\n{\nrankdir=LR bgcolor=white compound=true node[fontColor=white fontname=halvetica]\n\nsubgraph cluster_0 {label=\"Fast Decoding\"  fontcolor=black; color=black;\nDecode [fontcolor=white shape=ellipse label=\"Decode\" style=filled fillcolor=royalblue4]\nDecode1 [fontcolor=white shape=ellipse label=\"Decode#1\" style=filled fillcolor=royalblue4]\nDecode2 [fontcolor=white shape=ellipse label=\"Decode#2\" style=filled fillcolor=royalblue4]\nDecode3 [fontcolor=white shape=ellipse label=\"Decode#3\" style=filled fillcolor=royalblue4]\nDecode4 [fontcolor=white shape=ellipse label=\"Decode#4\" style=filled fillcolor=royalblue4]\nDecode5 [fontcolor=white shape=ellipse label=\"Decode#5\" style=filled fillcolor=royalblue4]\nDecode6 [fontcolor=white shape=ellipse label=\"Decode#6\" style=filled fillcolor=royalblue4]\nDecode7 [fontcolor=white shape=ellipse label=\"Decode#7\" style=filled fillcolor=royalblue4]\nDecode8 [fontcolor=white shape=ellipse label=\"Decode#8\" style=filled fillcolor=royalblue4]\nDecode9 [fontcolor=white shape=ellipse label=\"Decode#9\" style=filled fillcolor=royalblue4]\nDecode10 [fontcolor=white shape=ellipse label=\"Decode#10\" style=filled fillcolor=royalblue4]\nDecode11 [fontcolor=white shape=ellipse label=\"Decode#11\" style=filled fillcolor=royalblue4]\nDecode12 [fontcolor=white shape=ellipse label=\"Decode#12\" style=filled fillcolor=royalblue4]\nDecode13 [fontcolor=white shape=ellipse label=\"Decode#13\" style=filled fillcolor=royalblue4]\nDecode14 [fontcolor=white shape=ellipse label=\"Decode#14\" style=filled fillcolor=royalblue4]\nDecode15 [fontcolor=white shape=ellipse label=\"Decode#15\" style=filled fillcolor=royalblue4]\nDecode16 [fontcolor=white shape=ellipse label=\"Decode#16\" style=filled fillcolor=royalblue4]\nDecode17 [fontcolor=white shape=ellipse label=\"Decode#17\" style=filled fillcolor=royalblue4]\nDecode18 [fontcolor=white shape=ellipse label=\"Decode#18\" style=filled fillcolor=royalblue4]\n\n}\nsubgraph cluster_1 {label=\"Hello World\"  fontcolor=black; color=black;\nHello [fontcolor=white shape=ellipse label=\"Hello\" style=filled fillcolor=royalblue4]\nSalutation [fontcolor=white shape=ellipse label=\"Salutation\" style=filled fillcolor=royalblue4]\nworld [fontcolor=white shape=ellipse label=\"world\" style=filled fillcolor=royalblue4]\n\n}\n\nDecode -> Hello [color=black]\nDecode1 -> Hello [color=black]\nDecode2 -> Hello [color=black]\nDecode3 -> Hello [color=black]\nDecode4 -> Hello [color=black]\nDecode5 -> Hello [color=black]\nDecode6 -> Hello [color=black]\nDecode7 -> Hello [color=black]\nDecode8 -> Hello [color=black]\nDecode9 -> Hello [color=black]\nDecode10 -> Hello [color=black]\nDecode11 -> Hello [color=black]\nDecode12 -> Hello [color=black]\nDecode13 -> Hello [color=black]\nDecode14 -> Hello [color=black]\nDecode15 -> Hello [color=black]\nDecode16 -> Hello [color=black]\nDecode17 -> Hello [color=black]\nDecode18 -> Hello [color=black]\nHello -> Salutation [color=black]\nSalutation -> world [color=black]\n}"
+}

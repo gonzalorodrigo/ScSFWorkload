@@ -1,0 +1,8 @@
+{"max_cores": 144, 
+ "tasks": [{"id": "S0", "number_of_cores": 112, "name": "S0", "execution_cmd": "python ./S0.py", "runtime_limit": 480, "runtime_sim": 120 },
+           {"id": "S1", "number_of_cores": 144, "name": "S1", "execution_cmd": "python ./S1.py", "runtime_limit": 480, "runtime_sim": 100}], 
+ "resource_steps": [{"num_cores": 112, "end_time": 480}, 
+                    {"num_cores": 144, "end_time": 960}], 
+ "total_runtime": 960,
+ "dot_dag": "digraph \"S1 World BATCH ParallelSeq\"\n{\nrankdir=LR bgcolor=white compound=true node[fontColor=white fontname=halvetica]\n\nsubgraph cluster_0 {label=\"Fast Decoding\"  fontcolor=black; color=black;\nS0 [fontcolor=white shape=ellipse label=\"S0\" style=filled fillcolor=royalblue4]\n\n}\nsubgraph cluster_1 {label=\"S1 World\"  fontcolor=black; color=black;\nS1 [fontcolor=white shape=ellipse label=\"S1\" style=filled fillcolor=royalblue4]\n\n}\n\nS0 -> S1 [color=black]\n}"
+}
