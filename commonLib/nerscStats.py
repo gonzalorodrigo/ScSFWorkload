@@ -25,7 +25,7 @@ def normalize(varList, maxVal=None):
 def calculatePerson(varList):
    # print varList
     vec = np.array(varList, dtype=float)
-    print vec.shape
+    print(vec.shape)
    
     return np.corrcoef(vec)
     
@@ -63,7 +63,7 @@ class ResultsStore:
         if type(listR) is dict:
             self.regResultDic(name, hostname, listR, dateKey=dateKey)
         else:
-            print 
+            print() 
             #print self.keyStore[name]
             #print listR
             for (key, res) in zip(self.keyStore[name], listR):
@@ -82,8 +82,8 @@ class ResultsStore:
         else:
             dicD={}
             dicO=self.resultsDic[name][key]
-            for host in dicO.keys():
-                for date in dicO[host].keys():
+            for host in list(dicO.keys()):
+                for date in list(dicO[host].keys()):
                     dicD[host+" "+date]=dicO[host][date]
             return dicD
                 
@@ -97,7 +97,7 @@ class ResultsStore:
         else:
             dicD={}
             dicO=resultsDic[name][key][hostname]
-            for k in dicO.keys():
+            for k in list(dicO.keys()):
                 dicD[hostname+" "+k]=dicO[k]
             return dicD
             

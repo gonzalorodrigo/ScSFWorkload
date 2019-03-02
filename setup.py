@@ -1,6 +1,7 @@
 """
 Installer for ScSF
 """
+from pip.req import parse_requirements
 from setuptools import setup, find_packages
 
 
@@ -13,6 +14,8 @@ setup(
     packages=find_packages(),
     version=version,
     extras_require={},
+    install_requires=[str(ir.req) for ir in 
+                    parse_requirements('requirements.txt', session='hack')],
     author="Gonzalo Rodrigo",
     author_email="GPRodrigoAlvarez@lbl.gov",
     maintainer="Gonzalo Rodrigo",

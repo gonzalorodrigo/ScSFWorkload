@@ -22,7 +22,7 @@ class SSH(object):
         output, err = p.communicate()
         rc = p.returncode
         if (rc!=0):
-            print "File push operation error", output, err
+            print("File push operation error", output, err)
         return rc == 0
     
     def retrieve_file(self, origin_route, dest_route):
@@ -33,13 +33,13 @@ class SSH(object):
         output, err = p.communicate()
         rc = p.returncode
         if (rc!=0):
-            print "File retrieve operation error", output, err
+            print("File retrieve operation error", output, err)
         return rc == 0
     
     def delete_file(self, route):
         output, err, rc=self.execute_command("/bin/rm", [route])
         if rc!=0:
-            print "File delete operation error", output, err
+            print("File delete operation error", output, err)
         return rc==0
         
         

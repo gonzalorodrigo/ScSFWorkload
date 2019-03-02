@@ -14,22 +14,22 @@ class StartTimeCorrector(object):
         self._experiment.load(db_obj, trace_id)
         
         self._trace = ResultTrace()
-        print "Loading trace {0}".format(trace_id)
+        print("Loading trace {0}".format(trace_id))
         self._trace.load_trace(db_obj, trace_id)
         trace_type = self._experiment._workflow_handling
-        print "Calculating corrected start times for trace {0}".format(trace_id)
+        print("Calculating corrected start times for trace {0}".format(trace_id))
         modified_start_times = self.get_corrected_start_times(trace_type)
-        print ("Found {0} jobs which start time was 0, but had ended.".format(
-                                            len(modified_start_times)))
+        print(("Found {0} jobs which start time was 0, but had ended.".format(
+                                            len(modified_start_times))))
         print ("About to update times")
         self.apply_new_times(db_obj, modified_start_times)    
     
     def apply_new_times(self, db_obj, modified_start_times):
         trace_id=self._experiment._trace_id
-        for id_job in modified_start_times.keys():
+        for id_job in list(modified_start_times.keys()):
             time_start=modified_start_times[id_job]
-            print ("updating trace_id({0}), id_job({1}) with time_start: {2}"
-                   "".format(trace_id, id_job, time_start))
+            print(("updating trace_id({0}), id_job({1}) with time_start: {2}"
+                   "".format(trace_id, id_job, time_start)))
             self.update_time_start(db_obj,trace_id, id_job, time_start)
     
     def update_time_start(self, db_obj, trace_id, id_job, time_start):
@@ -63,7 +63,7 @@ class StartTimeCorrector(object):
     def get_workflow_info(self, workflow_file):
         
         
-        if not workflow_file in self.manifest_dics.keys():
+        if not workflow_file in list(self.manifest_dics.keys()):
             from orchestration.running import ExperimentRunner
             manifest_route = path.join(ExperimentRunner.get_manifest_folder(),
                                       workflow_file)

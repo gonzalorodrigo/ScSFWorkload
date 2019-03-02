@@ -16,11 +16,11 @@ def get_diff_results(db_obj, trace_id_rows, mean=False,
 
 def print_results(time_labels, manifest_label,diffs_results,
                   num_decimals=2):
-    print " & ".join(time_labels) + "\\\\"
-    print "\\hline"
+    print(" & ".join(time_labels) + "\\\\")
+    print("\\hline")
     for (man,row) in zip(manifest_label,diffs_results):
-        print (" & ".join([man]+
+        print((" & ".join([man]+
                       [("${0:."+str(num_decimals)+"f}$").format(the_value) 
                         for the_value in row]) +
-               "\\\\")
-    print "\\hline"
+               "\\\\"))
+    print("\\hline")

@@ -37,7 +37,7 @@ def addPost(list):
     return [x+char for x in list]
 def summaryParameters(outActions, outputValues, parameterActions):
     cad=""
-    for key in outActions.keys():
+    for key in list(outActions.keys()):
         if (cad!=""):
             cad+=", "
         cad+="--"+key+" "+str(outActions[key])
@@ -68,7 +68,7 @@ def processParameters(argv, singleActions, singleLetters, parameterActions, para
                     
     except getopt.GetoptError as err:
         # print help information and exit:
-        print str(err) # will print something like "option -a not recognized"
+        print(str(err)) # will print something like "option -a not recognized"
         sys.exit(2)
     
     singleActions=addScore(singleActions, True)
@@ -102,10 +102,10 @@ def processParameters(argv, singleActions, singleLetters, parameterActions, para
                 index=parameterLetters.index(o)
             #print "KK", index
             if (index==-1):
-                print "unknown parameter: "+o
+                print("unknown parameter: "+o)
                 exit(2)
             else:
                 outputValues[index]=type(outputValues[index])(a)
-    print "Input Args: "+summaryParameters(outActions, outputValues, parameterActions)
+    print("Input Args: "+summaryParameters(outActions, outputValues, parameterActions))
     return outActions, outputValues
             

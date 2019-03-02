@@ -92,7 +92,10 @@ class ProbabilityMap(object):
     def load(self, file_route):
         """Fills the object with the content in file_route"""
         pkl_file = open(file_route, 'rb')
-        self._container = pickle.load(pkl_file)
+        try:
+            self._container = pickle.load(pkl_file)
+        except:
+            self._container = pickle.load(pkl_file, encoding='latin1')
         pkl_file.close()
         
     def produce_number(self):

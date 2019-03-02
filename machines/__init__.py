@@ -53,23 +53,23 @@ class Machine(object):
             to a remote database. 
         - dbName: Name of the MySQL database to pull the data from.
         """
-        print "Loading data..."
+        print("Loading data...")
         data_dic=get_jobs_data(self._machine_name,
                     start.year, start.month, start.day,
                     stop.year, stop.month, stop.day,
                     dbName=dbName, forceLocal = local)
         
-        print "Producing inter-arrival time generator."
+        print("Producing inter-arrival time generator.")
         self._generators["inter"] = self._populate_inter_generator(
                                                         data_dic["created"])
-        print "Producing #cores per job  generator."
+        print("Producing #cores per job  generator.")
         self._generators["cores"] = self._populate_cores_generator(
                                                         data_dic["totalcores"])
-        print "Producing wc_limit per job generator."
+        print("Producing wc_limit per job generator.")
         self._generators["wc_limit"] = (
             self._populate_wallclock_limit_generator(
                                              data_dic["wallclock_requested"]))
-        print "Producing accuracy per job generator."
+        print("Producing accuracy per job generator.")
         self._generators["accuracy"] = self._populate_wallclock_accuracy(
                                                 data_dic["wallclock_requested"],
                                                 data_dic["duration"])
@@ -99,7 +99,7 @@ class Machine(object):
         "[file_dir]/[description]-[machine name]-[var name].gen". Requires
         file_dir to exist
         """
-        for (key, generator) in  self._generators.iteritems():
+        for (key, generator) in  self._generators.items():
             generator.save(self._get_files_gen(file_dir, description, key))
         
     def load_from_file(self, file_dir, description):
@@ -108,7 +108,7 @@ class Machine(object):
         "[file_dir]/[description]-[machine name]-[var name].gen".
         """
         self._create_empty_generators()
-        for (key, generator) in  self._generators.iteritems():
+        for (key, generator) in  self._generators.items():
             generator.load(self._get_files_gen(file_dir, description, key))
         
     def _get_files_gen(self, file_dir, description, generator_name):

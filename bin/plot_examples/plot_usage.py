@@ -4,15 +4,15 @@ workflow types and different %of workflow core hours in the workload.
 Resuls are plotted as barchars that show how much the vas deviate in
 single and multi from aware.
 """
+import matplotlib
+
 from orchestration import get_central_db
-
-
 from plot import (extract_usage, join_rows,
                   gen_trace_ids_exps, get_list_rows,
                   plot_multi_bars, produce_plot_config)
 
+
 # remote use no Display
-import matplotlib
 matplotlib.use('Agg')
 
 
@@ -81,7 +81,7 @@ grouping_types = [["bar", "bar", "bar"],
 head_file_name="wf_percent-b{0}".format(base_trace_id_percent)
 title = "Utilization, percent scenarios"
 y_limits=(0,100)
-print "JOLA"
+
 
 plot_multi_bars(
         name=title,

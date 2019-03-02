@@ -1,8 +1,8 @@
 import numpy as np
-
-from stats.trace import ResultTrace
-from stats.compare import WorkflowDeltas
 from orchestration.definition import ExperimentDefinition
+from stats.compare import WorkflowDeltas
+from stats.trace import ResultTrace
+
 
 class AnalysisRunnerSingle(object):
     """Class to run an analysis on the results of a single experiment. This is
@@ -29,7 +29,7 @@ class AnalysisRunnerSingle(object):
          Args:
         - db_obj: DB object configured to access the analysis database.
         """
-        print "Analyzing trace:", self._definition._trace_id
+        print(("Analyzing trace:", self._definition._trace_id))
         result_trace = self.load_trace(db_obj)
         
         result_trace.calculate_job_results(True, db_obj, 
@@ -150,7 +150,7 @@ class AnalysisGroupRunner(AnalysisRunnerSingle):
         acc_workflow_count=0
         for (trace_id, workflow_count, subt) in zip(self._definition._subtraces,
                                               workflow_count_list,
-                                              range(len(workflow_count_list))):
+                                              list(range(len(workflow_count_list)))):
             """
             For each sub trace, we need the other two.
                 - we looad all the jobs.
@@ -176,8 +176,8 @@ class AnalysisGroupRunner(AnalysisRunnerSingle):
             first=False
         result_trace.rename_workflows(None)
         result_trace._wf_extractor.do_processing()
-        print ("After FINAL number of WFs",
-               len(result_trace._wf_extractor._workflows.values()))
+        print(("After FINAL number of WFs",
+               len(list(result_trace._wf_extractor._workflows.values()))))
         result_trace.calculate_workflow_results(True, db_obj, 
                                        self._definition._trace_id,
                                        start=self._definition.get_start_epoch(),
@@ -194,8 +194,8 @@ class AnalysisRunnerDelta(AnalysisRunnerSingle):
     def load_trace(self, db_obj):
         
         trace_comparer = WorkflowDeltas()
-        pairs = zip(self._definition._subtraces[0::2],
-                    self._definition._subtraces[1::2])
+        pairs = list(zip(self._definition._subtraces[0::2],
+                    self._definition._subtraces[1::2]))
         for (first_id, second_id) in pairs:
             trace_comparer.load_traces(db_obj, first_id, second_id)
             trace_comparer.produce_deltas(True)

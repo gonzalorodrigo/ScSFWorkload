@@ -24,7 +24,7 @@ trace_id=None
 if len(sys.argv)>=3:
     trace_id=sys.argv[2]
 else:
-    print "TRACE ID and VM IP are required to rescue data"
+    print("TRACE ID and VM IP are required to rescue data")
 
 central_db_obj = get_central_db()
 sched_db_obj = get_sim_db(simulator_ip)

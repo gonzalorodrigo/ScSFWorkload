@@ -12,21 +12,21 @@ class Tunnel:
         self.connected=False
     
     def connect(self):
-        print "Creating tunnel"
+        print("Creating tunnel")
         if (not self.connected):
     #        subprocess.call([self.shell, self.route, "&"])
             p = subprocess.Popen(self.route.split())
             time.sleep(5)
             self.subP=p
-            print "Tunnel Started, pid:", self.subP.pid
+            print("Tunnel Started, pid:", self.subP.pid)
             self.connected=True
         else:
-            print "Tunnel already created"
+            print("Tunnel already created")
     
     def disconnect(self):
         if (self.connected):
             self.subP.kill()
             time.sleep(5)
-            print "Tunnel Destroyed"
+            print("Tunnel Destroyed")
         else:
-            print "Tunnel didn't exist"
+            print("Tunnel didn't exist")

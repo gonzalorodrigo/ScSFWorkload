@@ -165,7 +165,7 @@ class WorkloadGenerator(object):
             if not self._disable_generate_workload_element:
                 jobs_generated+=self._generate_workload_element(create_time)
             jobs_generated+=self._pattern_generator_timers_trigger(create_time)
-        print("{0} jobs generated".format(jobs_generated))
+        print(("{0} jobs generated".format(jobs_generated)))
         return jobs_generated
     
     def disable_generate_workload_elemet(self):

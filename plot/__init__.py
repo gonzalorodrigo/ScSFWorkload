@@ -20,7 +20,7 @@ def get_args(default_trace_id=1, lim=False):
         opts, args = getopt.getopt(sys.argv[1:],"i:ln",
                                    ["id=", "lim", "nolim"])
     except getopt.GetoptError:
-        print 'test.py [-i <trace_id>] [-l]'
+        print('test.py [-i <trace_id>] [-l]')
         sys.exit(2)
     for opt, arg in opts:
         if opt in ("-i", "--id"):
@@ -275,7 +275,7 @@ def adjust_number_ticks(ax, tick_count, log_scale=False, extra=None):
     """ Adjusts the y-axis of ax to show only tick_count labels."""
     my_t=ax.get_yticks()
     y_lim = (float(str(my_t[0])), float(str(my_t[-1])))
-    print "INTERNAL", y_lim
+    print("INTERNAL", y_lim)
     step = float(max(y_lim)-min(y_lim))/(tick_count-1)
     step=float(str(step))
     upper_limit=float(str(max(y_lim)+step))
@@ -300,7 +300,7 @@ def remove_ids(list_of_rows, group_size=3, list_of_pos_to_remove=[0]):
         new_row=[]
         new_list_of_rows.append(new_row)
         index=0
-        for (index, elem) in zip(range(len(row)), row):
+        for (index, elem) in zip(list(range(len(row))), row):
             if not index%group_size in list_of_pos_to_remove:
                 new_row.append(elem)
     return new_list_of_rows
@@ -348,7 +348,7 @@ def gen_trace_ids_exps(base_id, base_exp=None, group_size=3, group_count=5,
         trace_id_rows_colors.append(trace_id_row)
         if base_exp is not None:
             trace_id_row.append(base_exp)
-        group_index_list=range(group_count)
+        group_index_list=list(range(group_count))
         if inverse:
             group_index_list=reversed(group_index_list)
 
@@ -665,10 +665,10 @@ def plot_multi_bars(name, file_name, title,
     """
     num_rows=len(exp_rows)
     fig, axes = plt.subplots(nrows=num_rows/ncols, ncols=ncols)
-    print axes
+    print(axes)
     if ncols>1:
         axes=asarray(flatten_list(axes))
-    print axes
+    print(axes)
     if not (type(axes) is ndarray):
         axes=[axes] 
     colors=do_list_like(colors, exp_rows)
@@ -765,7 +765,7 @@ def _autolabel(ax, rects, values,bigger_numbers=False, background=True,
             max_value=min(max_value, y_limits[1])
     distance = max_value-min_value
     mid_point=min_value+distance/2.0
-    print "values", min_value, max_value, distance, mid_point
+    print("values", min_value, max_value, distance, mid_point)
     va="bottom"
     margin=0.05
     h_margin=0.0
@@ -1065,7 +1065,7 @@ def get_list_rows(rows, field_list):
         new_row = []
         new_rows.append(new_row)
         
-        for (index,res) in zip(range(len(row)),row):
+        for (index,res) in zip(list(range(len(row))),row):
             field=field_list[index%len(field_list)]
             new_row.append(res._get(field))
     return new_rows
@@ -1139,7 +1139,7 @@ def extract_results(db_obj, trace_id_rows_colors, result_type, factor=None,
     return exp_rows
 
 def get_dic_val(dic, val):
-    if val in dic.keys():
+    if val in list(dic.keys()):
         return dic[val]
     return dic[""]
 
@@ -1190,7 +1190,7 @@ def produce_plot_config(db_obj, trace_id_rows_colors):
                 ("wait","pink", "multi", "/")]
     new_legend=[]
     for item in legend:
-        if item[2] in detected_handling.keys():
+        if item[2] in list(detected_handling.keys()):
             new_legend.append(item)
     
     return color_rows, hatches_rows, new_legend

@@ -6,14 +6,13 @@
  
 """
 
-import os
-import unittest
-
 from analysis.jobAnalysis import (produce_inter_times, _join_var_bins,
                                   calculate_probability_map,
                                   calculate_histogram, get_jobs_data,
                                   get_jobs_data_trace)
+import os
 from slurm import trace_gen as trace_gen
+import unittest
 
 
 class TestJobAnalysis(unittest.TestCase):
@@ -126,7 +125,7 @@ class TestJobAnalysis(unittest.TestCase):
                                        account="theaccount",
                                        reservation="thereservation",
                                        dependency="thedependency")
-        f = open('tmp.trace', 'w')
+        f = open('tmp.trace', 'bw')
         f.write(record)
         f.close()
         

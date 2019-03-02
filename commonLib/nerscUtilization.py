@@ -1,7 +1,7 @@
-import numpy as np
 import bisect
 import time
-from __builtin__ import True
+
+import numpy as np
 
 
 def getCurrentActiveJobs(startEpoch, startNumbers, durationNumbers, coreNumbers, completionNumbers):
@@ -64,7 +64,7 @@ class UtilizationEngine:
                              " time Step")
         timeStamps=self.sampleTimeStamp
         #print timeStamps
-        maxTimeStamp=long(timeStamps[-1])
+        maxTimeStamp=int(timeStamps[-1])
         lastTimeStamp=0
         accummSurface=0
         
@@ -72,17 +72,17 @@ class UtilizationEngine:
         if (shiftValue!=None and shiftValue!=0):
             timeStamps,cutSampleUser=cutSamples(timeStamps, cutSampleUser, shiftValue)
         if (maxUse==None):
-            maxUse=long(max(cutSampleUser))
+            maxUse=int(max(cutSampleUser))
         ts=np.array(timeStamps[1:])-np.array(timeStamps[0:-1])
         u=np.transpose(np.array(cutSampleUser[0:-1]))
         accummSurface=np.dot(ts,u)
-        print "Obtained Integrated Surface:", accummSurface               
+        print("Obtained Integrated Surface:", accummSurface)               
         #for ts, u in zip(timeStamps[1:],self.sampleUse[0:-1]):
         #    accummSurface+=long(ts)*long(u)
         timePeriod=timeStamps[-1]-timeStamps[0]
-        print "Time period", timePeriod
+        print("Time period", timePeriod)
         targetSurface=maxUse*(timePeriod)
-        print "Target surface", targetSurface
+        print("Target surface", targetSurface)
        
         return float(accummSurface)/float((targetSurface))
         
@@ -99,13 +99,13 @@ class UtilizationEngine:
             self.sampleUse.append(self.currentUse)
         
         if (self.currentUse<0):
-            print "JODER"
+            print("JODER")
         
     
     def procesEndingJobs(self, timeStamp, doRegister=True):
         i=0
         for time, use in zip(self.endingJobsTime, self.endingJobsUse):
-            if time<=timeStamp or timeStamp is None:
+            if  timeStamp is None or time<=timeStamp:
                 #print "job dying", timeStamp
                 self.changeUse(time, -use, doRegister=doRegister)
                 i+=1
@@ -175,12 +175,12 @@ class UtilizationEngine:
                 continue
             percent=(step/steps*100)
             if (percent%5.0==0.0):
-                print "Progress: "+str( percent)+"%"
+                print("Progress: "+str( percent)+"%")
                 
             
-            time=long(time)
-            jobDuration=long(jobDuration)
-            jobUse=long(jobUse)
+            time=int(time)
+            jobDuration=int(jobDuration)
+            jobUse=int(jobUse)
             
             
             

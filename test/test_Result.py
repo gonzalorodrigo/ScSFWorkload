@@ -129,13 +129,13 @@ class TestNumericStats(unittest.TestCase):
     def test_calculate(self):
         num = NumericStats()
         
-        num.calculate(range(0,101))
+        num.calculate(list(range(0,101)))
         data = num.get_data()
         self.assertEqual(data["count"], 101)
         self.assertEqual(data["min"], 0)
         self.assertEqual(data["max"], 100)
         self.assertEqual(data["mean"], 50)
-        self.assertEqual(data["std"], np.std(range(0,101)))
+        self.assertEqual(data["std"], np.std(list(range(0,101))))
         self.assertEqual(data["median"], 50)
         self.assertEqual(data["p05"], 5)
         self.assertEqual(data["p25"], 25)
@@ -148,7 +148,7 @@ class TestNumericStats(unittest.TestCase):
         num = NumericStats()
         self.addCleanup(self._del_table, "numericStats")
         num.create_table(self._db)
-        num.calculate(range(0,101))
+        num.calculate(list(range(0,101)))
         data_id=num.store(self._db, 1, "MyStats")
         num=None
         
@@ -159,7 +159,7 @@ class TestNumericStats(unittest.TestCase):
         self.assertEqual(data["min"], 0)
         self.assertEqual(data["max"], 100)
         self.assertEqual(data["mean"], 50)
-        self.assertAlmostEqual(data["std"], np.std(range(0,101)))
+        self.assertAlmostEqual(data["std"], np.std(list(range(0,101))))
         self.assertEqual(data["median"], 50)
         self.assertEqual(data["p05"], 5)
         self.assertEqual(data["p25"], 25)
@@ -171,7 +171,7 @@ def assertEqualResult(test_obj, r_old, r_new, field):
     d_old = r_old.get_data()
     d_new = r_new.get_data()
     if "_stats" in field:
-        for (v1, v2) in zip(d_old.values(), d_new.values()):
+        for (v1, v2) in zip(list(d_old.values()), list(d_new.values())):
             test_obj.assertAlmostEqual(v1,v2)
     elif "_cdf" in field:
         test_obj.assertListEqual(list(d_old[0]), list(d_new[0]))

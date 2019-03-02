@@ -1,29 +1,32 @@
 
-import matplotlib.dates as mdates
-import numpy as np
-import scipy as sp
-from scipy.stats import scoreatpercentile                                                                         
-import math
-import matplotlib
-from sys import platform
-if platform == "darwin":
-    matplotlib.use('TkAgg')
-from matplotlib import pyplot
-
-from pylab import *
-import time
-from matplotlib.font_manager import FontProperties
-
-import matplotlib.pyplot as plt
 import gc
+import math
 import os
-# from scipy.spatial import Voronoi, voronoi_plot_2d
+from sys import platform
+import time
 
-from mpl_toolkits.mplot3d import Axes3D
-import matplotlib.pyplot as plt
+from matplotlib import pyplot
+import matplotlib
+from matplotlib.font_manager import FontProperties
+from pylab import *
+from scipy.stats import scoreatpercentile
 
 from commonLib import starLib
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+import numpy as np
+import scipy as sp
 import scipy.cluster.vq as vq
+
+if platform == "darwin":
+    matplotlib.use('TkAgg')
+
+
+# from scipy.spatial import Voronoi, voronoi_plot_2d
+
+
 
 def clearMem():
     plt.close('all')
@@ -32,33 +35,33 @@ def clearMem():
 
 showGraphs = True
 def disableShow():
-	global showGraphs
-	matplotlib.use('Agg')
-	showGraphs = False
-	
+    global showGraphs
+    matplotlib.use('Agg')
+    showGraphs = False
+    
 def showFig(fig, ax):
-	if (showGraphs):
-		fig.show()
-	else:
-		plt.close('all')
-		plt.clf()
-		del fig
-		del ax
-	
-# 	gc.collect()
+    if (showGraphs):
+        fig.show()
+    else:
+        plt.close('all')
+        plt.clf()
+        del fig
+        del ax
+    
+#     gc.collect()
 def showAll():
-	plt.show()
-	plt.close('all')
-	plt.clf()
-	gc.collect()
-	
+    plt.show()
+    plt.close('all')
+    plt.clf()
+    gc.collect()
+    
 def saveGraph(fig, dir, graphFileName):
-	if (graphFileName != ""): 
-		if (dir != ""):
-			dir += "/"
-		fullRoute = dir + graphFileName + ".png"
+    if (graphFileName != ""): 
+        if (dir != ""):
+            dir += "/"
+        fullRoute = dir + graphFileName + ".png"
 
-		fig.savefig(fullRoute)
+        fig.savefig(fullRoute)
                 
 def cleanFileName(fileName):
     words = fileName.split(" ")
@@ -67,11 +70,11 @@ def cleanFileName(fileName):
         nWords.append("".join(c.upper() if i == 0 else c for i, c in enumerate(word)))
     return "".join(nWords)
     
-	
+    
 def adjustXTickers(ax, ticks="", rotation="vertical", fontsize=None,):
         
     if (ticks != ""):
-        print "do"
+        print("do")
         ax.set_xticks(ticks)
     tickers = ax.xaxis.get_major_ticks()
     for tick in tickers:
@@ -81,12 +84,12 @@ def adjustXTickers(ax, ticks="", rotation="vertical", fontsize=None,):
             tick.label.set_rotation(rotation)
 
 def adjustYTickers(ax, ticks="", fontsize=13, fontsize2=13):
-	if (ticks != ""):
-		ax.set_yticks(ticks)
-		ax.set_ylim(ticks[0], ticks[-1])
-	tickers = ax.yaxis.get_major_ticks()
-	for tick in tickers:
-		tick.label.set_fontsize(fontsize) 
+    if (ticks != ""):
+        ax.set_yticks(ticks)
+        ax.set_ylim(ticks[0], ticks[-1])
+    tickers = ax.yaxis.get_major_ticks()
+    for tick in tickers:
+        tick.label.set_fontsize(fontsize) 
         tick.label2.set_fontsize(fontsize2)
 
 def setTitle(fig, title, fontsize=14):
@@ -97,12 +100,12 @@ def setTitle(fig, title, fontsize=14):
 
 def adjustLabels(ax, labelX, labelY, labelZ="", fontsizeX=13, fontsizeY=13, fontsizeZ=13):
   if labelX != "":
-	   ax.set_xlabel(labelX, fontsize=fontsizeX)
+       ax.set_xlabel(labelX, fontsize=fontsizeX)
   if labelY != "":
-	   ax.set_ylabel(labelY, fontsize=fontsizeY)
+       ax.set_ylabel(labelY, fontsize=fontsizeY)
   if (labelZ != ""):
-	   ax.set_zlabel(labelZ, fontsize=fontsizeZ)
-		
+       ax.set_zlabel(labelZ, fontsize=fontsizeZ)
+        
 def adjustMargin(fig, top="", bottom="", right="", left="", \
                  hspace="", vspace=""):
     if top == "":
@@ -114,31 +117,31 @@ def adjustMargin(fig, top="", bottom="", right="", left="", \
     if bottom != "":
         fig.subplots_adjust(bottom=bottom)
     
-	if (right != ""):
-		fig.subplots_adjust(right=right)
-	if (left != ""):
-		fig.subplots_adjust(left=left)
+    if (right != ""):
+        fig.subplots_adjust(right=right)
+    if (left != ""):
+        fig.subplots_adjust(left=left)
     
     if (hspace != ""):
         subplots_adjust(hspace=hspace)
     if (vspace != ""):
         subplots_adjust(vspace=vspace)
                 
-	
-	
+    
+    
 def addHLines(ax, ticks=""):
-	if (ticks == ""):
-		ticks = ax.get_yticks()
-	for l in ticks:
-		ax.axhline(y=l)
+    if (ticks == ""):
+        ticks = ax.get_yticks()
+    for l in ticks:
+        ax.axhline(y=l)
 
-		
+        
 def yAxisNormalize(ax):
-	yAxis = ax.get_yaxis()
+    yAxis = ax.get_yaxis()
 
 def splitDic(dic, series=""):
     if (series == ""):
-        series = sort(dic.keys())
+        series = sort(list(dic.keys()))
     values = []
     for k in series:
         values.append(dic[k])
@@ -175,7 +178,7 @@ def paintStarGraph(name, dataList, varsNames, seriesNames, dir="", graphFileName
 
     colors = ['b', 'r', 'g', 'm', 'y', 'r', 'g', 'm', 'y']
     
-    cN = range(1, len(seriesNames))
+    cN = list(range(1, len(seriesNames)))
     colors = cmap.to_rgba(cN)
     
     plt.rgrids([0.2, 0.4, 0.6, 0.8])
@@ -210,7 +213,7 @@ def paintBoxPlotSeries(name, seriesNames, dic, dir="", graphFileName="", labelX=
 
 def cleanLabels(labels, count=1, dates=False):
     newLabels = []
-    for (label, i) in zip(labels, range(len(labels))):
+    for (label, i) in zip(labels, list(range(len(labels)))):
         if (dates and count == "month"):
             if (time.strftime('%d', time.localtime(label)) == 1):
                  label = time.strftime('%Y-%m-%d', time.localtime(label))
@@ -235,7 +238,7 @@ def paintBoxPlotSimpleMultiSplitGraph(name, seriesDic, valuesDic, dir="", \
                         allGraphsLabels=False, yLim=None, xTicksRotation=None, \
                             interPlotSpace=None):
     
-    graphNames = seriesDic.keys()
+    graphNames = list(seriesDic.keys())
     if seriesNames != None:
         graphNames = seriesNames
 
@@ -257,7 +260,7 @@ def paintBoxPlotSimpleMultiSplitGraph(name, seriesDic, valuesDic, dir="", \
     if (numberGraphs == 1):
         axes = [axes]
     
-    for ax, graphName, index in zip(axes, graphNames, range(numberGraphs)):
+    for ax, graphName, index in zip(axes, graphNames, list(range(numberGraphs))):
         series = seriesDic[graphName]
         values = valuesDic[graphName]    
         if xTicksRotation != None:
@@ -292,7 +295,7 @@ def paintBoxPlotSimpleMultiSplitGraph(name, seriesDic, valuesDic, dir="", \
              xtickNames = plt.setp(ax, xticklabels=["" for s in series])
         
         if (limitY != None):
-            print "SEEEEETTTING"
+            print("SEEEEETTTING")
             ax.set_ylim(limitY)
         
         if (yLim != None):
@@ -309,7 +312,7 @@ def paintBoxPlotSimpleMultiSplitGraph(name, seriesDic, valuesDic, dir="", \
 def paintBoxPlotSimpleSeries(name, seriesNames, subSeriesNames, valuesDic, dir="", graphFileName="", labelX="Series",
                              labelY="Value", logScale=False, inSeries="", fontsizeX=12, fontsizeY=13):
     
-    print "sub series:", subSeriesNames
+    print("sub series:", subSeriesNames)
     factor = 0.9 / len(seriesNames)
     colors = cm.rainbow(np.linspace(0, 1, len(seriesNames)))
     
@@ -338,7 +341,7 @@ def paintBoxPlotSimpleSeries(name, seriesNames, subSeriesNames, valuesDic, dir="
     for (series, c) in zip(seriesNames, colors):
         
         values = valuesDic[series]
-        print "postions", edges + acumm
+        print("postions", edges + acumm)
         acumm += factor
         # plt.boxplot(values, color=c)
         plt.boxplot(values, positions=edges + factor, widths=factor)
@@ -407,7 +410,7 @@ def paintScatterSeries(name, xDic, yDic, seriesNames=None, dir="", graphFileName
     ax = fig.add_subplot(111)
     # plt.axes().set_aspect('equal', 'datalim')
     if seriesNames == None:
-        seriesNames = xDic.keys()
+        seriesNames = list(xDic.keys())
     
     if (logScale):
         ax.set_yscale('log')
@@ -429,7 +432,7 @@ def paintScatterSeries(name, xDic, yDic, seriesNames=None, dir="", graphFileName
         y = yDic[serie]
         if tickFrequence != None:
             x, minXValue, maxXValue = tansformEpochToDates(x, minXValue, maxXValue)
-        print "minmax", minXValue, maxXValue
+        print("minmax", minXValue, maxXValue)
         plt.scatter(x, y, alpha=alpha, color=c, s=dotSize, lw=dotSize)
        
         # if (dateLabels):
@@ -439,7 +442,7 @@ def paintScatterSeries(name, xDic, yDic, seriesNames=None, dir="", graphFileName
     
 
     if(centroids != ""):
-        print centroids[:, 0], centroids[:, 1]
+        print(centroids[:, 0], centroids[:, 1])
         plt.scatter(centroids[:, 0], centroids[:, 1], color="black")
         
         
@@ -476,10 +479,10 @@ def paintScatterSeries(name, xDic, yDic, seriesNames=None, dir="", graphFileName
     legend = plt.legend(seriesNames, bbox_to_anchor=(0.95 + displace, 1), loc=2, borderaxespad=0., labelspacing=0.1, prop={'size':fontsizeX - 2})
 
     if (boundsUnrelated != None):
-        print boundsUnrelated
-        colorsUn = cm.rainbow(np.linspace(0, 1, len(boundsUnrelated.keys())))
+        print(boundsUnrelated)
+        colorsUn = cm.rainbow(np.linspace(0, 1, len(list(boundsUnrelated.keys()))))
         plotLines = []
-        for (cluster, color) in zip(boundsUnrelated.keys(), colorsUn):
+        for (cluster, color) in zip(list(boundsUnrelated.keys()), colorsUn):
 
             l = boundsUnrelated[cluster]
             # print l
@@ -489,7 +492,7 @@ def paintScatterSeries(name, xDic, yDic, seriesNames=None, dir="", graphFileName
             plotLines.append(plt.plot(l[:, 0], l[:, 1], color=color, linewidth=2.0, label=str(cluster)))
         
         if (showLegendBoxes):
-            legend2 = pyplot.legend(sorted([str(x) for x in boundsUnrelated.keys()]), \
+            legend2 = pyplot.legend(sorted([str(x) for x in list(boundsUnrelated.keys())]), \
                                     bbox_to_anchor=(1.2 + displace, 0), loc=4, borderaxespad=0., \
                                     labelspacing=0.1, prop={'size':fontsizeX - 2})
             pyplot.gca().add_artist(legend)
@@ -538,11 +541,11 @@ def xAxisDates(ax, minXValue, maxXValue, tickFrequence):
     elif (tickFrequence == "day"):    
         locator = mdates.DayLocator()    
         minLocator = mdates.HourLocator()
-        print "day"
+        print("day")
     elif (tickFrequence == "hour"):   
         locator = mdates.HourLocator()   
         dateFormatter = mdates.DateFormatter('%H')
-        print "hour"
+        print("hour")
     else:
         locator = mdates.AutoDateLocator()   
    
@@ -560,9 +563,9 @@ def xAxisDates(ax, minXValue, maxXValue, tickFrequence):
     # ax.format_xdata = dateFormatter
     # fig.autofmt_xdate()
     # plt.tight_layout()
-    print datetime.datetime.fromtimestamp(minXValue)
-    print datetime.datetime.fromtimestamp(maxXValue)
-    print "bounds", minXValue, maxXValue
+    print(datetime.datetime.fromtimestamp(minXValue))
+    print(datetime.datetime.fromtimestamp(maxXValue))
+    print("bounds", minXValue, maxXValue)
     # ax.set_xlim([datetime.datetime.fromtimestamp(minXValue), datetime.datetime.fromtimestamp(maxXValue)])
     ax.set_xlim(date2num(datetime.datetime.fromtimestamp(minXValue)), date2num(datetime.datetime.fromtimestamp(maxXValue)))
     ax.grid(True)
@@ -587,108 +590,108 @@ def highFilter(list, val):
     return [x for x in list if x <= val ]
     
 def getPertentiles(list, percentiles):
-    print "percent", percentiles
+    print("percent", percentiles)
     return np.percentile(np.array(list), percentiles)
     
-	
+    
 def paintHistogram(name, values, bins=0, dir="", graphFileName="", labelX="Series", labelY="Value", \
                    logScale=False, special="", fontsizeX=12, fontsizeY=13, fontsizeY2=13, \
                     normed=False, cumulative=False, cumulativePlot=True,
                     filterCut=0):
-# 	print exp.edges
-# 	print exp.hist
-        if (bins == 0):
-            bins = calculateBins(values)
-        
-        
-        if normed and labelY == "Value":
-            labelY = "%"
+#     print exp.edges
+#     print exp.hist
+    if (bins == 0):
+        bins = calculateBins(values)
+    
+    
+    if normed and labelY == "Value":
+        labelY = "%"
         
         # print "Doing histogram, number of bins:"+str(bins)
     #    hist, edges=np.histogram(values, bins=bins, range=None, normed=False, weights=None, density=None)
         
         # numpy.histogram(a, bins=bins, range=None, normed=False, weights=None, density=None)[source]
 
-	fig = plt.figure(name)
-	setTitle(fig, name, fontsize=fontsizeX + 2)
-	adjustMargin(fig, top=0.88, bottom=0.18)
+    fig = plt.figure(name)
+    setTitle(fig, name, fontsize=fontsizeX + 2)
+    adjustMargin(fig, top=0.88, bottom=0.18)
         
      
-	
-	ax = fig.add_subplot(111)
+    
+    ax = fig.add_subplot(111)
 
-	
-	# if (size(edges)<64):
-	# 		plt.ylim(ymin=0)
+    
+    # if (size(edges)<64):
+    #         plt.ylim(ymin=0)
 
-	
-	# ax.bar(edges[0:-1], hist, width=(edges[1]-edges[0]))
+    
+    # ax.bar(edges[0:-1], hist, width=(edges[1]-edges[0]))
         # ax.bar(edges[0:-1], hist)
-        if (logScale):
-            ax.set_yscale('log')
-            
-        # n, edges, patches  =ax.hist(values, bins=bins, log=logScale, normed=normed)
-        weights = None
-        total = sum(values)
-       
-        if (filterCut != 0):
-            filterValues = highFilter(values, filterCut)
-            # values=filterValues
-        else:
-            filterValues = values
-        if (normed):
-            weights = np.zeros_like(filterValues) + 100. / len(values)
-
-            
-        n, edges, patches = ax.hist(filterValues, bins=bins, log=logScale, weights=weights, cumulative=cumulative)
+    if (logScale):
+        ax.set_yscale('log')
         
+    # n, edges, patches  =ax.hist(values, bins=bins, log=logScale, normed=normed)
+    weights = None
+    total = sum(values)
+   
+    if (filterCut != 0):
+        filterValues = highFilter(values, filterCut)
+        # values=filterValues
+    else:
+        filterValues = values
+    if (normed):
+        weights = np.zeros_like(filterValues) + 100. / len(values)
+
+        
+    n, edges, patches = ax.hist(filterValues, bins=bins, log=logScale, weights=weights, cumulative=cumulative)
+    
 #        if (normed):
 #            print np.sum(n)
 #            formatter = FuncFormatter(to_percent)
 #            plt.gca().yaxis.set_major_formatter(formatter)
         
         # print edges
-        ax.set_ylim(min(n), max(n))
+    ax.set_ylim(min(n), max(n))
+    
+    if cumulativePlot:
+        ax2 = ax.twinx()
+        ax2.set_yscale("linear")
         
-        if cumulativePlot:
-            ax2 = ax.twinx()
-            ax2.set_yscale("linear")
-            
-    #        print n
-    #        print hist
-    #        print edges
-    #        print "Lenght", len(edges[:-1]), np.cumsum(n)
+#        print n
+#        print hist
+#        print edges
+#        print "Lenght", len(edges[:-1]), np.cumsum(n)
 
-            cumulativeArray = np.cumsum(n, dtype=float)
-            cumulativeArray /= cumulativeArray[-1]
-           # print cumulativeArray
-            ax2.plot(edges[:-1], cumulativeArray, color="red")
-            adjustLabels(ax2, "", "Cumulative %", fontsizeX=fontsizeX, fontsizeY=fontsizeY)
-            adjustYTickers(ax2, fontsize=fontsizeY, fontsize2=fontsizeY2)
-            legend = plt.legend((["Cumulative %"]))
-            if (normed):
-                ax2.set_ylym = [0, 1]
-        
-        
-        if (special != ""):
-            # ax3 = ax.twinx()
+        cumulativeArray = np.cumsum(n, dtype=float)
+        cumulativeArray /= cumulativeArray[-1]
+       # print cumulativeArray
+        ax2.plot(edges[:-1], cumulativeArray, color="red")
+        adjustLabels(ax2, "", "Cumulative %", fontsizeX=fontsizeX, fontsizeY=fontsizeY)
+        adjustYTickers(ax2, fontsize=fontsizeY, fontsize2=fontsizeY2)
+        legend = plt.legend((["Cumulative %"]))
+        if (normed):
+            ax2.set_ylym = [0, 1]
+    
+    
+    if (special != ""):
+        # ax3 = ax.twinx()
 #            ax3.set_yscale("linear")
-            # print "here we go"
+        # print "here we go"
 #            print special
 #            cumulativeArray=np.cumsum(special, dtype=float)
 #            print "Total CPU Seconds: ", cumulativeArray[-1]
 #            cumulativeArray/=cumulativeArray[-1]
 #            print cumulativeArray
-            special[1] = [x for x in special[1]]
+        special[1] = [x for x in special[1]]
 #            print special[0]
 #            print special[1]
 #            print special[1]-n
-            ax.plot(special[0], special[1], color="green")
+        ax.plot(special[0], special[1], color="green")
 #            ax3.set_xlim(min(edges), max(edges))
 #            if (normed):
 #                ax3.set_ylim(min(n),max(n))
 #                ax.set_ylim(min(n),max(n))
-                
+            
 #            if (logScale):
 #                ax3.set_yscale("log")
    
@@ -696,22 +699,22 @@ def paintHistogram(name, values, bins=0, dir="", graphFileName="", labelX="Serie
         
             
         
-	adjustLabels(ax, labelX, labelY, fontsizeX=fontsizeX, fontsizeY=fontsizeY)
-	adjustXTickers(ax, rotation=45, fontsize=fontsizeY)
-	adjustYTickers(ax, fontsize=fontsizeY)
-	addHLines(ax)
+    adjustLabels(ax, labelX, labelY, fontsizeX=fontsizeX, fontsizeY=fontsizeY)
+    adjustXTickers(ax, rotation=45, fontsize=fontsizeY)
+    adjustYTickers(ax, fontsize=fontsizeY)
+    addHLines(ax)
 
-	if graphFileName != None:
+    if graphFileName != None:
             saveGraph(fig, dir, graphFileName)
 
-# 	plt.close('all')
-# 	plt.clf()
-# 	del fig
-# 	del ax
-	
-# 	gc.collect()
-	# showFig(fig, ax)
-        return n, edges, patches
+#     plt.close('all')
+#     plt.clf()
+#     del fig
+#     del ax
+    
+#     gc.collect()
+    # showFig(fig, ax)
+    return n, edges, patches
     
 # def highFilter(list, val):
 #    return [x for x in list if x<=val ]
@@ -725,7 +728,7 @@ def paintHistogramMulti(name, valuesDic, bins=0, dir="", graphFileName="", label
 
 
     if multiFilter != None:
-        for key in valuesDic.keys():
+        for key in list(valuesDic.keys()):
 #            for (limit, index) in zip(multiFilter, range(len(multiFilter))):
 #                if (limit!=0):
                      valuesDic[key] = [x for x in valuesDic[key] if x <= multiFilter]
@@ -756,17 +759,17 @@ def paintHistogramMulti(name, valuesDic, bins=0, dir="", graphFileName="", label
             ax.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
     
     if cumulativePlot:
-      if (onlyCumulative):
-        ax2 = ax
-      else:
-        ax2 = ax.twinx()
+        if (onlyCumulative):
+            ax2 = ax
+        else:
+            ax2 = ax.twinx()
         
-      ax2.set_yscale("linear")
+        ax2.set_yscale("linear")
 
     m = 0
     mMin = None
     superMax = 0
-    for key in valuesDic.keys():
+    for key in list(valuesDic.keys()):
         superMax = max(m, max(valuesDic[key],))
         if (filterCut != 0):
             m = max(m, max(highFilter(valuesDic[key], filterCut)))
@@ -782,7 +785,7 @@ def paintHistogramMulti(name, valuesDic, bins=0, dir="", graphFileName="", label
     if not xLogScale:
         bins = np.linspace(0, m, bins)
     else:
-        print "LOGSPACE", mMin, m, bins
+        print("LOGSPACE", mMin, m, bins)
         #bins = np.logspace(0.1, log(float(m)), bins)
         if xLogMin == None:
             xLogMin = 1
@@ -797,7 +800,7 @@ def paintHistogramMulti(name, valuesDic, bins=0, dir="", graphFileName="", label
     line_styles = ["-","--","-.",":", 'steps']
     marker_styles = [ '+' , ',' , '.' , '1' , '2' , '3' , '4' ]
 
-    for (key, line_style, marker) in zip(valuesDic.keys(),
+    for (key, line_style, marker) in zip(list(valuesDic.keys()),
                                          line_styles, marker_styles):
         values = valuesDic[key]
         weights = None
@@ -829,13 +832,13 @@ def paintHistogramMulti(name, valuesDic, bins=0, dir="", graphFileName="", label
                 nBins.append(superMax)
             if xLogScale:
                 nBins.insert(0, 0)
-            print "BINS2", nBins
+            print("BINS2", nBins)
 #             if (not xLogScale):
 #                 nBins.append(superMax)
 #             else:
 #                 nBins=numBins
             n, edges = np.histogram(valuesDic[key], nBins)
-            print "last", n[-1]
+            print("last", n[-1])
             cumulativeArray = np.cumsum(n, dtype=float)
             cumulativeArray /= cumulativeArray[-1]
             minTemp = min(cumulativeArray)
@@ -911,20 +914,20 @@ def r_squared(actual, ideal):
 
     return ideal_dev / actual_dev
 def doTrendLine(series, values):
-    xValues = np.array(range(1, len(values) + 1))
+    xValues = np.array(list(range(1, len(values) + 1)))
     values = np.array(values)
-    print len(values)
-    print len(xValues)
+    print(len(values))
+    print(len(xValues))
     slope, intercept = np.polyfit(xValues, values, 1)
     ideal_values = intercept + (slope * xValues)
     r_sq = r_squared(values, ideal_values)
 
     fit_label = 'Linear fit ({0:.2f})'.format(slope)
-    print len(xValues), len(ideal_values)
+    print(len(xValues), len(ideal_values))
     plt.plot(xValues, ideal_values, color='red', linestyle='--', label=fit_label)
     plt.annotate('r^2 = {0:.2f}'.format(r_sq), (0.05, 0.9), xycoords='axes fraction')
     plt.legend(loc='lower right')
-	
+    
 
 def paintBars(name, dic, dir="", graphFileName="", labelX="Series", labelY="Value", logScale=False, trend=False):
         series, values = splitDic(dic)
@@ -948,34 +951,34 @@ def paintBarsSimple(name, series, values, dir="", graphFileName="", labelX="Seri
 
 
      #   print "Doing Bars, Series:"+str((series))
-	
-	fig = plt.figure(name)
-	setTitle(fig, name)
-	adjustMargin(fig)
-		
-
-	ax = fig.add_subplot(111)
+    
+    fig = plt.figure(name)
+    setTitle(fig, name)
+    adjustMargin(fig)
         
-        edges = np.arange(len(values))
-        width = 1.0 / float(len(edges))
-        if (logScale):
-            ax.set_yscale('log')
-        print edges, values, len(edges), len(values)
-        ax.bar(edges, values, log=logScale)
-	adjustLabels(ax, labelX, labelY)
-        ax.set_xticks(edges + 0.5)
-        ax.set_xticklabels(series)
-        # plt.xticks(series)
-        adjustXTickers(ax)
-	# adjustYTickers(ax)
-	addHLines(ax)
 
-	if trend:
+    ax = fig.add_subplot(111)
+        
+    edges = np.arange(len(values))
+    width = 1.0 / float(len(edges))
+    if (logScale):
+        ax.set_yscale('log')
+    print(edges, values, len(edges), len(values))
+    ax.bar(edges, values, log=logScale)
+    adjustLabels(ax, labelX, labelY)
+    ax.set_xticks(edges + 0.5)
+    ax.set_xticklabels(series)
+    # plt.xticks(series)
+    adjustXTickers(ax)
+    # adjustYTickers(ax)
+    addHLines(ax)
+
+    if trend:
             doTrendLine(series, values)
 
-	
-       # plt.close()
-	saveGraph(fig, dir, graphFileName)
+    
+    # plt.close()
+    saveGraph(fig, dir, graphFileName)
 
 
 
@@ -990,9 +993,9 @@ def paintBarsSimpleMultiSplitGraph(name, seriesDic, valuesDic, dir="", graphFile
       
 
 
-     #   print "Doing Bars, Series:"+str((series))
+    #   print "Doing Bars, Series:"+str((series))
 
-    allGraphManes = seriesDic.keys()
+    allGraphManes = list(seriesDic.keys())
     if (seriesNames != None):
         allGraphManes = seriesNames
 
@@ -1001,9 +1004,9 @@ def paintBarsSimpleMultiSplitGraph(name, seriesDic, valuesDic, dir="", graphFile
     adjustMargin(fig)
 
     
-    print "PAINT ordering:", allGraphManes
+    print("PAINT ordering:", allGraphManes)
 
-    for (ax, graphName, graphCount) in zip(axes, allGraphManes, range(len(allGraphManes))):
+    for (ax, graphName, graphCount) in zip(axes, allGraphManes, list(range(len(allGraphManes)))):
         seriesNames = (seriesDic[graphName])
         factor = 0.9 / len(seriesNames)
         colors = cm.rainbow(np.linspace(0, 1, len(seriesNames)))
@@ -1011,10 +1014,10 @@ def paintBarsSimpleMultiSplitGraph(name, seriesDic, valuesDic, dir="", graphFile
         subSeriesNames = sorted(valuesDic[graphName][seriesNames[0]].keys())
         if sortingFunctionSubSeries!=None:
             subSeriesNames = [x.replace("\\n", "_") for x in subSeriesNames]
-            print subSeriesNames
+            print(subSeriesNames)
             subSeriesNames = sortingFunctionSubSeries(subSeriesNames, graphName)
-          #  subSeriesNames = [x.replace("_", "\n") for x in subSeriesNames]
-            print subSeriesNames
+            #  subSeriesNames = [x.replace("_", "\n") for x in subSeriesNames]
+            print(subSeriesNames)
             
         
         edges = np.arange(len(subSeriesNames))
@@ -1041,7 +1044,7 @@ def paintBarsSimpleMultiSplitGraph(name, seriesDic, valuesDic, dir="", graphFile
         for (series, c) in zip(seriesNames, colors):
 
             values = [valuesDic[graphName][series][x] for x in subSeriesNames]
-            print series, edges, width, values
+            print(series, edges, width, values)
             ax.bar(edges + displace, values, log=logScale, width=width, color=c, label=series)
             displace += width
 #            if trend:
@@ -1068,8 +1071,8 @@ def paintBarsSimpleSeries(name, seriesNames,
                           fontsizeX=12):
       
 
-    print seriesNames
-    print subSeriesNames
+    print(seriesNames)
+    print(subSeriesNames)
     factor = 0.9 / len(seriesNames)
     colors = cm.rainbow(np.linspace(0, 1, len(seriesNames)))
      #   print "Doing Bars, Series:"+str((series))
@@ -1269,53 +1272,53 @@ def paintPlotMulti(name, series, valuesDic, dir="", graphFileName="", labelX="Se
 
 
      #   print "Doing Bars, Series:"+str((series))
-	
-	fig = plt.figure(name)
-	setTitle(fig, name)
-	adjustMargin(fig)
-		
-	
-	ax = fig.add_subplot(111)
+    
+    fig = plt.figure(name)
+    setTitle(fig, name)
+    adjustMargin(fig)
+        
+    
+    ax = fig.add_subplot(111)
         
         # edges=np.arange(len(values))
         # width=1.0/float(len(edges))
-        if (logScale):
-            ax.set_yscale('log')
-        
+    if (logScale):
+        ax.set_yscale('log')
+    
+    
+    
+    if tickFrequence != None:
+        series, minXValue, maxXValue = tansformEpochToDates(series, -1, 0)
+        xAxisDates(ax, minXValue, maxXValue, tickFrequence)
+    
+    
+    # if (dateLabels):
+    #    plt.plot_date(x,y)
+    
+    
        
+    addHRefLines(hLines)
+    
+    
+    for valuesKey in list(valuesDic.keys()):
         
-        if tickFrequence != None:
-            series, minXValue, maxXValue = tansformEpochToDates(series, -1, 0)
-            xAxisDates(ax, minXValue, maxXValue, tickFrequence)
-
-       
-        # if (dateLabels):
-        #    plt.plot_date(x,y)
         
     
-           
-        addHRefLines(hLines)
+        ax.plot(series, valuesDic[valuesKey], label=valuesKey)
+    
+    ax.legend()
+    if (xLim != None):
+        ax.set_xlim(xLim)
+    adjustLabels(ax, labelX, labelY)
         
-        
-        for valuesKey in valuesDic.keys():
-            
-            
-  
-            ax.plot(series, valuesDic[valuesKey], label=valuesKey)
+    # ax.set_xticklabels(series)
+    # plt.xticks(series)
+    adjustXTickers(ax)
+    # adjustYTickers(ax)
+    # addHLines(ax)
+    
 
-        ax.legend()
-        if (xLim != None):
-            ax.set_xlim(xLim)
-	adjustLabels(ax, labelX, labelY)
-        
-        # ax.set_xticklabels(series)
-        # plt.xticks(series)
-        adjustXTickers(ax)
-	# adjustYTickers(ax)
-	# addHLines(ax)
-	
-
-	saveGraph(fig, dir, graphFileName)
+    saveGraph(fig, dir, graphFileName)
     
 # def paintPlotMultiV2(name, seriesDic, valuesDic, dir="", graphFileName="", labelX="Series", \
 #                   labelY="Value", logScale=False, trend=False, \
@@ -1324,13 +1327,13 @@ def paintPlotMulti(name, series, valuesDic, dir="", graphFileName="", labelX="Se
 
 
 #     #   print "Doing Bars, Series:"+str((series))
-	
-# 	fig = plt.figure(name)
-# 	setTitle(fig, name)
-# 	adjustMargin(fig)
-		
-	
-# 	ax = fig.add_subplot(111)
+    
+#     fig = plt.figure(name)
+#     setTitle(fig, name)
+#     adjustMargin(fig)
+        
+    
+#     ax = fig.add_subplot(111)
         
 #        #edges=np.arange(len(values))
 #        #width=1.0/float(len(edges))
@@ -1361,16 +1364,16 @@ def paintPlotMulti(name, series, valuesDic, dir="", graphFileName="", labelX="Se
 #        ax.legend()
 #        if (xLim!=None):
 #            ax.set_xlim(xLim)
-# 	adjustLabels(ax, labelX, labelY)
+#     adjustLabels(ax, labelX, labelY)
         
 #        #ax.set_xticklabels(series)
 #        #plt.xticks(series)
 #        adjustXTickers(ax)
-# 	#adjustYTickers(ax)
-# 	#addHLines(ax)
-	
+#     #adjustYTickers(ax)
+#     #addHLines(ax)
+    
 
-# 	saveGraph(fig, dir, graphFileName)
+#     saveGraph(fig, dir, graphFileName)
         
 def paintPlotMultiV2(name, seriesDic, valuesDic, dir="", graphFileName="", xLim=None, \
                       labelX="Series", labelY="Value", \
@@ -1531,7 +1534,7 @@ def isInSeriesOwnGraphs(key, list):
     return False
 
 def getSubAxe(key, list):
-    for (l, i) in zip(list, range(len(list))):
+    for (l, i) in zip(list, list(range(len(list)))):
         if l in key:
             return i
     return 0
@@ -1543,8 +1546,8 @@ def paintPlotMultiV3(name, seriesDic, valuesDic, dir="", graphFileName="", xLim=
       
     subAxes = None
     if (seriesOwnGraphs != None and len(seriesOwnGraphs) > 0):
-        print "HEY", len(seriesOwnGraphs), len(valuesDic.keys())
-        if all([isInSeriesOwnGraphs(theKey, seriesOwnGraphs) for theKey in seriesDic.keys()]):
+        print("HEY", len(seriesOwnGraphs), len(list(valuesDic.keys())))
+        if all([isInSeriesOwnGraphs(theKey, seriesOwnGraphs) for theKey in list(seriesDic.keys())]):
             fig, axes = plt.subplots(nrows=len(seriesOwnGraphs) )
             subAxes = list(axes)[0:]
             ax = list(axes)[0]
@@ -1575,7 +1578,7 @@ def paintPlotMultiV3(name, seriesDic, valuesDic, dir="", graphFileName="", xLim=
     maxXValue = 0
     # subAx=0
     
-    for valuesKey in sort(valuesDic.keys()):
+    for valuesKey in sort(list(valuesDic.keys())):
         series = seriesDic[valuesKey]
         if tickFrequence != None:
             series = seriesDic[valuesKey]
@@ -1650,7 +1653,7 @@ def paintPlotMultiV3(name, seriesDic, valuesDic, dir="", graphFileName="", xLim=
 def getValueForGraph(field, graph):
     if (field == None):
         return field
-    if (type(field) is dict and graph in field.keys()):
+    if (type(field) is dict and graph in list(field.keys())):
         return field[graph]
     elif (type(field) is list):
         outF = []
@@ -1838,7 +1841,7 @@ def adjustMarginDic(fig, margins, numGraphs):
         margins = {}
 
     for a in ["top", "bottom", "left", "right", "hspace", "vspace"]:
-        if (not a in margins.keys()):
+        if (not a in list(margins.keys())):
             margins[a] = ""
     if (numGraphs > 1 and  margins["hspace"] == ""):
          margins["hspace"] = 0.5
@@ -1872,7 +1875,7 @@ def preProcessInputGraphs(dicOfDicX, dicOfDicY, \
                     graphOrder=None, dicOfListSeriesOrder=None):
     defaultKey = ""
     
-    if not type (dicOfDicX.values()[0]) is dict:
+    if not type (list(dicOfDicX.values())[0]) is dict:
         dicOfDicX = {defaultKey: dicOfDicX}
         dicOfDicY = {defaultKey: dicOfDicY}
         if (dicOfListSeriesOrder != None):
@@ -1881,9 +1884,9 @@ def preProcessInputGraphs(dicOfDicX, dicOfDicY, \
         numGraphs = 1
         
     else:
-        if defaultKey in dicOfDicX.keys():
+        if defaultKey in list(dicOfDicX.keys()):
             defaultKey = "N/A"
-        numGraphs = len(dicOfDicX.keys())
+        numGraphs = len(list(dicOfDicX.keys()))
     
     
     if (graphOrder == None):
@@ -1892,7 +1895,7 @@ def preProcessInputGraphs(dicOfDicX, dicOfDicY, \
     if (dicOfListSeriesOrder == None):
         dicOfListSeriesOrder = {}
         
-        for key in dicOfDicX.keys():
+        for key in list(dicOfDicX.keys()):
             dicOfListSeriesOrder[key] = sorted(dicOfDicX[key].keys())
     
     return dicOfDicX, dicOfDicY, numGraphs, defaultKey, graphOrder, dicOfListSeriesOrder
@@ -1906,7 +1909,7 @@ def preProcessInputGraphsList(dicList, \
     
     dicOfDicX = dicList[0]
     numDimensions = len(dicList)
-    if not type (dicOfDicX.values()[0]) is dict:
+    if not type (list(dicOfDicX.values())[0]) is dict:
         for i in range (numDimensions):
             dicList[i] = {defaultKey: dicList[i]}
 
@@ -1916,9 +1919,9 @@ def preProcessInputGraphsList(dicList, \
         numGraphs = 1
         
     else:
-        if defaultKey in dicOfDicX.keys():
+        if defaultKey in list(dicOfDicX.keys()):
             defaultKey = "N/A"
-        numGraphs = len(dicOfDicX.keys())
+        numGraphs = len(list(dicOfDicX.keys()))
     
     
     if (graphOrder == None):
@@ -1927,7 +1930,7 @@ def preProcessInputGraphsList(dicList, \
     if (dicOfListSeriesOrder == None):
         dicOfListSeriesOrder = {}
         
-        for key in dicOfDicX.keys():
+        for key in list(dicOfDicX.keys()):
             dicOfListSeriesOrder[key] = sorted(dicOfDicX[key].keys())
     
     return dicList, numGraphs, defaultKey, graphOrder, dicOfListSeriesOrder
@@ -2098,49 +2101,49 @@ def paintPlotSimple(name, series, values, dir="", graphFileName="", labelX="Seri
 
 
      #   print "Doing Bars, Series:"+str((series))
-	
-	fig = plt.figure(name)
-	setTitle(fig, name)
-	adjustMargin(fig)
-		
-	
-	ax = fig.add_subplot(111)
+    
+    fig = plt.figure(name)
+    setTitle(fig, name)
+    adjustMargin(fig)
+        
+    
+    ax = fig.add_subplot(111)
         
         # edges=np.arange(len(values))
         # width=1.0/float(len(edges))
-        if (logScale):
-            ax.set_yscale('log')
-        
-        
-        
-        if tickFrequence != None:
-            series, minXValue, maxXValue = tansformEpochToDates(series, -1, 0)
-            xAxisDates(ax, minXValue, maxXValue, tickFrequence)
+    if (logScale):
+        ax.set_yscale('log')
+    
+    
+    
+    if tickFrequence != None:
+        series, minXValue, maxXValue = tansformEpochToDates(series, -1, 0)
+        xAxisDates(ax, minXValue, maxXValue, tickFrequence)
 
-       
-        # if (dateLabels):
-        #    plt.plot_date(x,y)
-        
+   
+    # if (dateLabels):
+    #    plt.plot_date(x,y)
+    
 
-        ax.legend()
-        addHRefLines(hLines)
+    ax.legend()
+    addHRefLines(hLines)
         
         
         
   
-        ax.plot(series, values)
+    ax.plot(series, values)
 
     
-	adjustLabels(ax, labelX, labelY)
+    adjustLabels(ax, labelX, labelY)
         
-        # ax.set_xticklabels(series)
-        # plt.xticks(series)
-        adjustXTickers(ax)
-	# adjustYTickers(ax)
-	# addHLines(ax)
-	
+    # ax.set_xticklabels(series)
+    # plt.xticks(series)
+    adjustXTickers(ax)
+    # adjustYTickers(ax)
+    # addHLines(ax)
+    
 
-	saveGraph(fig, dir, graphFileName)
+    saveGraph(fig, dir, graphFileName)
 
 
         

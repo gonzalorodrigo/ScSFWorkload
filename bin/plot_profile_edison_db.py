@@ -15,7 +15,7 @@ from plot import profile
 
 start=datetime.date(2015, 1, 1)
 end=datetime.date(2015, 1, 2)
-print "LOADING DATA"
+print("LOADING DATA")
 data_dic=jobAnalysis.get_jobs_data("edison", start.year, start.month, start.day,
                           end.year, end.month, end.day)
 profile(data_dic["duration"], "Edison Logs\nJobs' wall clock (s)",

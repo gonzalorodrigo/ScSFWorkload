@@ -28,11 +28,11 @@ Env vars:
 - ANALYSIS_DB_PASS: password to be used to used to access the database.
 - ANALYSIS_DB_PORT: port on which the database runs.
 """
-from numpy import median
 import os
 import sys
 
 from dateutil.parser import parse
+from numpy import median
 
 from commonLib.nerscPlot import paintPlotMultiV2
 from generate import TimeController
@@ -235,4 +235,4 @@ paintPlotMultiV2(
 
 waittime_median = median(jobs_waittime[edge])
 
-print "Wait time median: {0}".format(waittime_median)
+print("Wait time median: {0}".format(waittime_median)) 

@@ -220,16 +220,16 @@ class TestOrchestration(unittest.TestCase):
         self.assertEqual(new_ew._work_state, "analysis_done")
         result_trace = ResultTrace()
         result_trace.load_analysis(db_obj, trace_id)
-        print "KK", result_trace.jobs_results
-        print "I AN HERE"
+        print("KK", result_trace.jobs_results)
+        print("I AN HERE")
         
         for field in job_fields:
             self.assertNotEqual(result_trace.jobs_results[field], None)
         if (wf):
             results=result_trace.workflow_results
             results_per_wf = result_trace.workflow_results_per_manifest
-            print results
-            print results_per_wf
+            print(results)
+            print(results_per_wf)
             for field in ["wf_runtime_cdf", "wf_runtime_stats",
              "wf_waittime_cdf",
              "wf_waittime_stats", "wf_turnaround_cdf", 
@@ -288,7 +288,7 @@ class TestOrchestration(unittest.TestCase):
                         "delta_runtime_stats", "delta_waittime_stats",
                         "delta_turnaround_stats",
                         "delta_stretch_stats"]:
-            self.assertIn(result_name, results.keys())
+            self.assertIn(result_name, list(results.keys()))
             if "_cdf" in result_name:
                 self.assertIs(type(results[result_name]), Histogram)
             elif "_stats" in result_name:

@@ -22,7 +22,7 @@ class TestTraceGen(unittest.TestCase):
                                        account="theaccount",
                                        reservation="thereservation",
                                        dependency="thedependency")
-        f = open('tmp.trace', 'w')
+        f = open('tmp.trace', 'bw')
         f.write(record)
         f.close()
         
@@ -62,14 +62,14 @@ class TestTraceGen(unittest.TestCase):
                                        reservation="thereservation",
                                        dependency="thedependency",
                                        workflow_manifest="my_manifest.json")
-        f = open('tmp.trace', 'w')
+        f = open('tmp.trace', 'bw')
         f.write(record)
         f.close()
         
         records=trace_gen.extract_records(file_name="tmp.trace",
                                 list_trace_location="../bin/list_trace")
         # There should be only one record
-        print records
+        print(records)
         self.assertEqual(len(records), 1)
         read_record=records[0]
         
@@ -198,7 +198,7 @@ class TestTraceGen(unittest.TestCase):
                                        reservation="thereservation2",
                                        dependency="thedependency2")
         generator.dump_qos("qos.sim")
-        f = file("qos.sim", "r")
+        f = open("qos.sim", "r")
         lines = f.readlines()
         self.assertEqual(len(lines), 2)
         
@@ -245,7 +245,7 @@ class TestTraceGen(unittest.TestCase):
                                        reservation="thereservation2",
                                        dependency="thedependency2")
         generator.dump_users("users.sim")
-        f = file("users.sim", "r")
+        f = open("users.sim", "r")
         lines = f.readlines()
         self.assertEqual(len(lines), 2)
         

@@ -15,9 +15,10 @@ Copyright Lawrence Berkeley National Lab 2015.
  
 """
 
-import struct
 import os
+import struct
 import subprocess
+
 
 class TraceGenerator(object):
     """Class to generate all the elements of a simulator trace. qos and user
@@ -154,7 +155,7 @@ class TraceGenerator(object):
         
     def dump_trace(self, file_name):
         """Dump job list."""
-        f = open(file_name, 'w')
+        f = open(file_name, 'bw')
         for job in self._job_list:
             f.write(job)
         f.close()
@@ -162,7 +163,7 @@ class TraceGenerator(object):
     def dump_users(self, file_name, extra_users=[]):
         """Dump user list with the format user:userid per line."""
         start_count = 1024
-        user_ids=range(start_count, start_count+len(self._user_list))
+        user_ids=list(range(start_count, start_count+len(self._user_list)))
         f = open(file_name, 'w')
         for (user, userid) in zip(self._user_list,user_ids):
             if not (":" in user):
@@ -208,18 +209,33 @@ def get_job_trace(job_id, username, submit_time, duration, wclimit,tasks,
         MAX_USERNAME_LEN, MAX_QOSNAME, MAX_RSVNAME = 30
 """ 
     if workflow_manifest is None:
-        buf=struct.pack("i30sliii30s30s30sii30s1024sP",job_id, username,
+
+        buf=struct.pack("i30sliii30s30s30sii30s1024sP",job_id,
+                        bytearray(username, encoding="utf-8"),
                         submit_time, 
-                        duration, wclimit, tasks, qosname, partition, account, 
-                        cpus_per_task, tasks_per_node, reservation, dependency,
+                        duration, wclimit, tasks,
+                        bytearray(qosname, encoding="utf-8"),
+                        bytearray(partition, encoding="utf-8"),
+                        bytearray(account, encoding="utf-8"), 
+                        cpus_per_task, tasks_per_node,
+                        bytearray(reservation, encoding="utf-8"),
+                        bytearray(dependency, encoding="utf-8"),
                         0)
     else:
-        buf=struct.pack("li30sliii30s30s30sii30s1024sP1024sP",0xFFFFFFFF,
-                        job_id, username,
+        buf=struct.pack("li30sliii30s30s30sii30s1024sP1024sP",
+                        0xFFFFFFFF,
+                        job_id,
+                        bytearray(username,encoding="utf-8"),
                         submit_time, 
-                        duration, wclimit, tasks, qosname, partition, account, 
-                        cpus_per_task, tasks_per_node, reservation, dependency,
-                        0, workflow_manifest, 0)
+                        duration, int(wclimit), tasks,
+                        bytearray(qosname,encoding="utf-8"),
+                        bytearray(partition, encoding="utf-8"),
+                        bytearray(account, encoding="utf-8"), 
+                        cpus_per_task, tasks_per_node,
+                        bytearray(reservation, encoding="utf-8"),
+                        bytearray(dependency, encoding="utf-8"),
+                        0, bytearray(workflow_manifest, encoding="utf-8"),
+                        0)
     
    
     return buf
@@ -243,7 +259,7 @@ def extract_records(file_name="test.trace",
         RES, DEP, NUM_TASKS, TASKS_PER_NODE, CORES_PER_TASK
     """
 
-    print [list_trace_location, '-w', file_name]
+    print([list_trace_location, '-w', file_name])
     proc = subprocess.Popen([list_trace_location, '-w', file_name], 
                             stdout=subprocess.PIPE)
     still_header=True
@@ -253,6 +269,7 @@ def extract_records(file_name="test.trace",
     
     while True:
         line=proc.stdout.readline()
+        line=line.decode("utf-8")
         if line is None or line=="":
             break
         if "JOBID" in line and col_names is None:

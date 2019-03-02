@@ -7,15 +7,17 @@ an experiment from it.
 
 """
 
+import matplotlib
+
 from orchestration import get_central_db
-from stats.trace import ResultTrace
 from orchestration.definition import ExperimentDefinition
 from plot import (plot_multi_exp_boxplot, produce_plot_config, extract_results,
-                  gen_trace_ids_exps, calculate_diffs,plot_multi_bars,
+                  gen_trace_ids_exps, calculate_diffs, plot_multi_bars,
                   join_rows)
+from stats.trace import ResultTrace
+
 
 # remote use no Display
-import matplotlib
 matplotlib.use('Agg')
 
 
@@ -123,7 +125,7 @@ manifest_label=[
 #                 ]
 
 
-print "IDs", compare_trace_id_rows
+print ("IDs", compare_trace_id_rows)
 # 
 # print colors_trace_id_rows
 
@@ -165,15 +167,15 @@ name="Slowdown"
 
 for edge in core_seconds_edges:
     edge_result_type=ResultTrace.get_result_type_edge(edge,result_type)
-    print "Loading "+edge_result_type
+    print("Loading "+edge_result_type)
     diff_source_results = extract_results(db_obj, compare_trace_id_rows,
                                           edge_result_type,
                                           fill_none=True)
-    print "VALUES:", diff_source_results
+    print("VALUES:", diff_source_results)
     diffs_results = calculate_diffs(diff_source_results, base_index=0, 
                                     group_count=4,
                                     speedup=True)
-    print "DIFFS:", diffs_results
+    print("DIFFS:", diffs_results)
 
     plot_results=diffs_results
    
@@ -182,7 +184,7 @@ for edge in core_seconds_edges:
     title="Workflows impact on slowdown: {0}".format(
                                         y_limits_title[edge_formated])
     y_limits=y_limits_dic[edge_formated]
-    print "Plotting figure"
+    print("Plotting figure")
     
     plot_multi_bars(
                name=title,

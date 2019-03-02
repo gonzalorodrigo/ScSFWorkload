@@ -100,7 +100,7 @@ class TestResultTrace(unittest.TestCase):
              "time_start": [3002,3001],
              "time_end": [3002,3005]                      
              }
-        for key in compare_data.keys():
+        for key in list(compare_data.keys()):
             self.assertEqual(compare_data[key], rt._lists_submit[key])
         
         compare_data= {
@@ -122,7 +122,7 @@ class TestResultTrace(unittest.TestCase):
              "time_start": [3001,3002],
              "time_end": [3005,3002]                      
              }
-        for key in compare_data.keys():
+        for key in list(compare_data.keys()):
             self.assertEqual(compare_data[key], rt._lists_start[key])
           
     def test_clean_dumplicates_db(self):
@@ -177,7 +177,7 @@ class TestResultTrace(unittest.TestCase):
         
         rt = ResultTrace()
         rt.import_from_db(self._db, "import_table")     
-        print  rt._lists_submit   
+        print(rt._lists_submit)   
         compare_data= {
              "job_db_inx":[1,3],
              "account": ["account1", "account2"],
@@ -197,7 +197,7 @@ class TestResultTrace(unittest.TestCase):
              "time_start": [3002,3001],
              "time_end": [3002,3005]                      
              }
-        for key in compare_data.keys():
+        for key in list(compare_data.keys()):
             self.assertEqual(compare_data[key], rt._lists_submit[key])
         
         compare_data= {
@@ -219,7 +219,7 @@ class TestResultTrace(unittest.TestCase):
              "time_start": [3001,3002],
              "time_end": [3005,3002]                      
              }
-        for key in compare_data.keys():
+        for key in list(compare_data.keys()):
             self.assertEqual(compare_data[key], rt._lists_start[key])
             
     def test_store_trace(self):
@@ -911,7 +911,7 @@ class TestResultTrace(unittest.TestCase):
         new_ut, new_acc, new_corrected_ut= rt_2.get_utilization_values()
         self.assertAlmostEqual(integrated_ut, new_ut)
         self.assertEqual(acc_waste, new_acc)
-        print "new_corrected_ut", new_corrected_ut
+        print("new_corrected_ut", new_corrected_ut)
         self.assertAlmostEqual(corrected_ut, new_corrected_ut)
     
     def test_calculate_utilization_median_result(self):

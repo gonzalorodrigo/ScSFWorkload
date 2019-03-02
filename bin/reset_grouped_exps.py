@@ -26,10 +26,11 @@ Env vars:
 - ANALYSIS_DB_PORT: port on which the database runs. 
 """
 
-from orchestration.definition import GroupExperimentDefinition
-from orchestration import get_central_db, get_sim_db
-
 import sys
+
+from orchestration import get_central_db, get_sim_db
+from orchestration.definition import GroupExperimentDefinition
+
 
 state="analysis_done"
 new_state="pending"
@@ -45,33 +46,33 @@ else:
 
 central_db_obj = get_central_db()
 
-print "Reseting experiments in state {0}".format(state)
+print("Reseting experiments in state {0}".format(state))
 there_are_more = True
 while (there_are_more):
     ed = GroupExperimentDefinition()
     if trace_id is not None:
         ed.load(central_db_obj, trace_id)
         if ed._work_state!=state:
-            print "Error, unexpected state {0} for trace {1}".format(
+            print("Error, unexpected state {0} for trace {1}".format(
                                                              ed._work_state,
-                                                             trace_id)
+                                                             trace_id))
             exit()
         ed.upate_state(central_db_obj, new_state)
         there_are_more=False
     else:
         there_are_more=ed.load_next_state(central_db_obj, state, new_state)
     if ed._trace_id!=None:
-        print "Reset experiment({0}: {1}): {2} -> {3}".format(ed._trace_id,
+        print("Reset experiment({0}: {1}): {2} -> {3}".format(ed._trace_id,
                                                   ed._name,
                                                   state,
-                                                  new_state)
+                                                  new_state))
         if new_state == "fresh":
             ed.del_trace(central_db_obj)
             ed.update_worker(central_db_obj,"")
             ed.reset_simulating_time(central_db_obj)
         if new_state in ["fresh", "simulation_complete", "simulation_done",
                          "pending"]:
-            print "A resetear"
+            print("A resetear")
             ed.del_results(central_db_obj)
         if new_state in ["analysis_done"]:
             ed.del_results_like(central_db_obj)

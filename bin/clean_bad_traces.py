@@ -27,19 +27,19 @@ of those experiments which are not valid. It also produces a list of "supicious
 traces", i.e. pairs of traces with different seeds but similar jobs.
 
 """
-from orchestration import get_central_db
-from orchestration.definition import ExperimentDefinition
-from stats.workflow import TaskTracker
-
-import sys
-
-
 """
 Get a list of experiments with the trace count.
 SQL:
     select trace_id, count(*) cc from traces where trace_id>=180
         group by trace_id order by cc
 """
+
+import sys
+
+from orchestration import get_central_db
+from orchestration.definition import ExperimentDefinition
+from stats.workflow import TaskTracker
+
 
 db_obj = get_central_db()
 
@@ -116,7 +116,7 @@ def check_trace_ok(db_obj, trace_id):
     
     job_list=get_workflow_jobs(db_obj, trace_id, 10)
     if len(job_list) == 0 and exp._workflow_policy!="no":
-        print "Exp({0}) should have worklfow jobs (0 found)".format(trace_id)
+        print("Exp({0}) should have worklfow jobs (0 found)".format(trace_id))
         return False
     
     if exp._workflow_handling=="single":

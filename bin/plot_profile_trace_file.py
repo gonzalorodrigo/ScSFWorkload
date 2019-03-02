@@ -16,7 +16,7 @@ if len(sys.argv)<2:
                      "containing the trace.")
 
 
-print "LOADING DATA"
+print("LOADING DATA")
 data_dic=jobAnalysis.get_jobs_data_trace("./data/edison-1000jobs.trace")
 
 profile(data_dic["duration"], "Trace\nJobs' wall clock (s)",

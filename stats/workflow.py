@@ -23,13 +23,13 @@ class WorkflowsExtractor(object):
         if reset_workflows:
             self._workflows={}
         size=None
-        for value in job_list.values():
+        for value in list(job_list.values()):
             if size is not None and size!=len(value):
                 raise ValueError("All lists in job_list should have the same"
                                  " length.")
         
         #self._workflows = {}
-        count = len(job_list.values()[0])
+        count = len(list(job_list.values())[0])
         for i in range(count):
             self.check_job(job_list, i)
         
@@ -37,7 +37,7 @@ class WorkflowsExtractor(object):
     def do_processing(self):
         """ Parsed workflows depenencies are filled and critical paths explored
         """
-        for wf in self._workflows.values():
+        for wf in list(self._workflows.values()):
             wf.fill_deps()
         
     
@@ -58,7 +58,7 @@ class WorkflowsExtractor(object):
         id_job = job_list["id_job"][pos]
         if "wf" == job_name[:2]:
             name, stage_id, deps = TaskTracker.extract_wf_name(job_name)
-            if not name in self._workflows.keys():
+            if not name in list(self._workflows.keys()):
                 self._workflows[name] = WorkflowTracker(name)
             self._workflows[name].register_task(job_list, pos, stage_id=="")
             return True
@@ -92,7 +92,7 @@ class WorkflowsExtractor(object):
         wf_jobs_runtime = []
         wf_jobs_cores = []
         
-        for wf in self._workflows.values():
+        for wf in list(self._workflows.values()):
             if wf._incomplete_workflow:
                 continue
             submit_time = wf.get_submittime()
@@ -127,7 +127,7 @@ class WorkflowsExtractor(object):
         name.
         """
         manifests = {}
-        for (name, wf) in self._workflows.iteritems():
+        for (name, wf) in self._workflows.items():
             if wf._incomplete_workflow:
                 continue
             submit_time = wf.get_submittime()
@@ -136,7 +136,7 @@ class WorkflowsExtractor(object):
             if (submit_stop is not None and submit_stop<submit_time):
                 continue
             manifest = name.split("-")[0]
-            if not manifest in manifests.keys():
+            if not manifest in list(manifests.keys()):
                 manifests[manifest]=dict(wf_runtime = [],
                                         wf_waittime = [],
                                         wf_turnaround= [],
@@ -214,14 +214,14 @@ class WorkflowsExtractor(object):
         """Eliminates the detected workflows, keeping only the first
         num_workflows ones."""
         new_dic={}
-        keys_sub_set = self.get_first_workflows(self._workflows.keys(),
+        keys_sub_set = self.get_first_workflows(list(self._workflows.keys()),
                                                  num_workflows)
         for key in keys_sub_set:
             new_dic[key]  = self._workflows[key]
         self._workflows = new_dic
     def rename_workflows(self, pre_id):
         new_dic={}
-        for key in self._workflows.keys():
+        for key in list(self._workflows.keys()):
             if key[0]==".":
                 if pre_id is None:
                     new_key=key[1:]
@@ -311,7 +311,7 @@ class WorkflowsExtractor(object):
                                                         submit_stop=stop)
         
         for man_name in new_manifests_values:
-            if man_name in self._manifests_values.keys():
+            if man_name in list(self._manifests_values.keys()):
                 self._manifests_values[man_name] = (
                     WorkflowsExtractor.join_dics_of_lists(
                                         self._manifests_values[man_name],
@@ -327,7 +327,7 @@ class WorkflowsExtractor(object):
         if limited:
             prefix="lim_"
         results_per_manifest = {}
-        for (manifest, data) in self._manifests_values.iteritems():
+        for (manifest, data) in self._manifests_values.items():
             results_per_manifest[manifest]= self.calculate_wf_results(
                 db_obj,trace_id,
                 data["wf_runtime"], data["wf_waittime"],
@@ -405,7 +405,7 @@ class WorkflowsExtractor(object):
         stamps_list = []
         wastedelta_list =[]
         acc_waste=0 
-        for wf in self._workflows.values():
+        for wf in list(self._workflows.values()):
             stamps, usage, acc = wf.get_waste_changes()
             acc_waste+=acc
             stamps_list, wastedelta_list = _fuse_delta_lists(stamps_list, 
@@ -417,13 +417,13 @@ class WorkflowsExtractor(object):
     def join_dics_of_lists(self, dic1, dic2):
         """ Returns a new dictionary: joins two dictionaries of lists """
         new_dic = {}
-        keys = dic1.keys()+dic2.keys()
+        keys = list(dic1.keys())+list(dic2.keys())
         keys = list(set(keys))
         for key in keys:
             new_dic[key]=[]
-            if key in dic1.keys():
+            if key in list(dic1.keys()):
                 new_dic[key]+=dic1[key]
-            if key in dic2.keys():
+            if key in list(dic2.keys()):
                 new_dic[key]+=dic2[key]
         return new_dic
 
@@ -503,7 +503,7 @@ class WorkflowTracker(object):
         if len(self._tasks)==0:
             return [self._parent_job]
         else:
-            return self._tasks.values()
+            return list(self._tasks.values())
             
 
     
@@ -526,7 +526,7 @@ class WorkflowTracker(object):
                     start_task = task
             else:
                 for dep in task.deps:
-                    if dep in self._tasks.keys():
+                    if dep in list(self._tasks.keys()):
                         self._tasks[dep].add_dep_to(task)
                     else:
                         self._incomplete_workflow=True
@@ -648,7 +648,7 @@ class WasteExtractor(object):
         if len(task["dependencyFrom"])==0:
             return True
         for task_dep in task["dependencyFrom"]:
-            if not "job_id" in task_dep.keys():
+            if not "job_id" in list(task_dep.keys()):
                 return False
         return True
     def _get_feasible_start_time(self, task, start_time):
@@ -673,7 +673,7 @@ class TaskTracker(object):
         - parent_workflow: workflow to which this task belongs. 
         """
         self.data = {}
-        for key in job_list.keys():
+        for key in list(job_list.keys()):
             self.data[key]=job_list[key][pos]
         
         self.name=self.data["job_name"]

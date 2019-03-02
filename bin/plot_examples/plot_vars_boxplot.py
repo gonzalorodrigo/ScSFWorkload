@@ -5,23 +5,24 @@ Results are plotted as boxplots for the variables in eahc exp.
 
 
 """
+import matplotlib
+
 from orchestration import get_central_db
-from stats.trace import ResultTrace
 from orchestration.definition import ExperimentDefinition
 from plot import (plot_multi_exp_boxplot, produce_plot_config, extract_results,
                   gen_trace_ids_exps, get_args)
+from stats.trace import ResultTrace
 
 
 # remote use no Display
-import matplotlib
 matplotlib.use('Agg')
 
 
 db_obj = get_central_db()
 
 base_trace_id_percent, lim = get_args(2459, True)
-print "Base Exp", base_trace_id_percent
-print "Using analysis of limited workflows:", lim
+print("Base Exp", base_trace_id_percent)
+print("Using analysis of limited workflows:", lim)
 
 edge_keys= {0: "[0,48] core.h", 48*3600:"(48, 960] core.h", 
             960*3600:"(960, inf.) core.h"}
@@ -68,7 +69,7 @@ for (name, result_type) in zip(["turnaround time (h.)", "wait time(h.)",
 
     if lim:
         result_type="lim_{0}".format(result_type)
-    print "Loading: {0}".format(name)
+    print("Loading: {0}".format(name))
     factor=1.0/3600.0
     if result_type in ("wf_stretch_factor", "lim_wf_stretch_factor"):
         factor=None
@@ -80,7 +81,7 @@ for (name, result_type) in zip(["turnaround time (h.)", "wait time(h.)",
     
     title="Workflows {0}".format(name)
     y_limits=None
-    print "Plotting figure"
+    print("Plotting figure")
     plot_multi_exp_boxplot(
         name=title,
         file_name=target_dir+"/{0}-{1}-boxplot.png".format(head_file_name,

@@ -19,15 +19,15 @@ matplotlib.use('Agg')
 
 start=datetime.date(2015, 1, 1)
 end=datetime.date(2015, 12, 31)
-print "LOADING DATA from trace"
+print("LOADING DATA from trace")
 trace_dic=jobAnalysis.get_jobs_data_trace("./data/edison-1Year-2015.trace")
 
-print "LOADING DATA from Database"
+print("LOADING DATA from Database")
 logs_dic=jobAnalysis.get_jobs_data("edison", start.year, start.month, start.day,
                           end.year, end.month, end.day)
 
 
-print "Plotting..."
+print("Plotting...")
 
 core_hours_logs = [float(x*y)/3600.0 for (x,y) in
                     zip(logs_dic["duration"], logs_dic["totalcores"])]
