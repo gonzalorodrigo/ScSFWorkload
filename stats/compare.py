@@ -84,8 +84,8 @@ class WorkflowDeltas(object):
         turnaround_deltas = []
         stretch_deltas = []
         wf_names = []
-        for wf_name in self._first_workflows.keys():
-            if wf_name in self._second_workflows.keys():
+        for wf_name in list(self._first_workflows.keys()):
+            if wf_name in list(self._second_workflows.keys()):
                 wf_1=self._first_workflows[wf_name]
                 wf_2=self._second_workflows[wf_name]
                 runtime_d, waittime_d, turnaround_d, stretch_d = (

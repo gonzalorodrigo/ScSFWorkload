@@ -142,7 +142,7 @@ def get_sched_waits(trace_id):
                 if sched_gap>the_max:
                     the_max=sched_gap
                     the_max_id=id_job
-    print "MAAAAX", the_max, the_max_id
+    print("MAAAAX", the_max, the_max_id)
     return sched_gaps_stamp, sched_gaps
 
 sched_gaps_stamp, sched_gaps = get_sched_waits(trace_id)

@@ -13,7 +13,7 @@ def filler(workload_gen, start_time, target_wait, max_cores, cores_per_node,
                             time_stamp,
                             cores=cores_per_job,
                             run_time=2*target_wait+final_gap,
-                            wc_limit=(2*target_wait+final_gap)/60+1,
+                            wc_limit=int((2*target_wait+final_gap)/60+1),
                             override_filter=True)
         time_stamp+=job_separation
     

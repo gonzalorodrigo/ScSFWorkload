@@ -1,16 +1,16 @@
-from commonLib.DBManager import DB
-from orchestration.definition import (ExperimentDefinition, 
-                                      GroupExperimentDefinition,
-                                      DeltaExperimentDefinition)
-from orchestration.running import ExperimentRunner
+import os
+from time import sleep
 
+from commonLib.DBManager import DB
 from orchestration.analyzing import (AnalysisRunnerSingle,
                                      AnalysisRunnerDelta,
                                      AnalysisGroupRunner)
-from time import sleep
+from orchestration.definition import (ExperimentDefinition,
+                                      GroupExperimentDefinition,
+                                      DeltaExperimentDefinition)
+from orchestration.running import ExperimentRunner
 from stats import  NumericStats
 
-import os
 
 def get_central_db(dbName="workload"):
     """Returns a DB object configured to access the workload analysis
@@ -77,15 +77,15 @@ class ExperimentWorker(object):
             else:
                 there_are_more = ed.load_fresh(central_db_obj)
             if there_are_more:
-                print "About to run exp({0}):{1}".format(
-                                ed._trace_id, ed._name)
+                print(("About to run exp({0}):{1}".format(
+                                ed._trace_id, ed._name)))
                 er = ExperimentRunner(ed)
                 if(er.do_full_run(sched_db_obj, central_db_obj)):
-                    print "Exp({0}) Done".format(
-                                                 ed._trace_id)
+                    print(("Exp({0}) Done".format(
+                                                 ed._trace_id)))
                 else:
-                    print "Exp({0}) Error!".format(
-                                                 ed._trace_id)
+                    print(("Exp({0}) Error!".format(
+                                                 ed._trace_id)))
             if trace_id:
                 break  
     
@@ -109,16 +109,16 @@ class ExperimentWorker(object):
                 there_are_more = ed.load_next_state("simulation_failed",
                                                     "simulation_done")
             if there_are_more:
-                print "About to run resque({0}):{1}".format(
-                                ed._trace_id, ed._name)
+                print(("About to run resque({0}):{1}".format(
+                                ed._trace_id, ed._name)))
                 er = ExperimentRunner(ed)
                 if(er.check_trace_and_store(sched_db_obj, central_db_obj)):
                     er.clean_trace_file()
-                    print "Exp({0}) Done".format(
-                                                 ed._trace_id)
+                    print(("Exp({0}) Done".format(
+                                                 ed._trace_id)))
                 else:
-                    print "Exp({0}) Error!".format(
-                                                 ed._trace_id)
+                    print(("Exp({0}) Error!".format(
+                                                 ed._trace_id)))
             if trace_id:
                 break  
 
@@ -143,7 +143,7 @@ class AnalysisWorker(object):
             else:
                 there_are_more = ed.load_pending(db_obj)
             if there_are_more:
-                print "Analyzing experiment {0}".format(ed._trace_id)
+                print(("Analyzing experiment {0}".format(ed._trace_id)))
                 er = AnalysisRunnerSingle(ed)
                 er.do_full_analysis(db_obj)
             if trace_id:
@@ -173,12 +173,12 @@ class AnalysisWorker(object):
                 ed_single.load(db_obj, trace_id+1)
                 ed_multi.load(db_obj, trace_id+2)
                 ed_list=[ed_manifest, ed_single, ed_multi]
-                print ("Reading workflow info for traces: {0}".format(
-                    [ed._trace_id for ed in ed_list]))
+                print(("Reading workflow info for traces: {0}".format(
+                    [ed._trace_id for ed in ed_list])))
                 if (ed_manifest._workflow_handling!="manifest" or
                     ed_single._workflow_handling!="single" or
                     ed_multi._workflow_handling!="multi"):
-                    print ("Incorrect workflow handling for traces"
+                    print(("Incorrect workflow handling for traces"
                            "({0}, {1}, {2}): ({3}, {4}, {5})",format(
                                ed_manifest._trace_id,
                                ed_single._trace_id,
@@ -186,7 +186,7 @@ class AnalysisWorker(object):
                                ed_manifest._workflow_handling,
                                ed_single._workflow_handling,
                                ed_multi._workflow_handling)
-                           )
+                           ))
                     print ("Exiting...")
                     exit()
 
@@ -199,14 +199,14 @@ class AnalysisWorker(object):
                         num_workflows = exp_wfs
                     else:
                         num_workflows=min(num_workflows, exp_wfs)
-                print ("Final workflow count: {0}".format(num_workflows))
+                print(("Final workflow count: {0}".format(num_workflows)))
                 for ed in ed_list:
-                    print ("Doing second pass for trace: {0}".format(
-                        ed._trace_id))
+                    print(("Doing second pass for trace: {0}".format(
+                        ed._trace_id)))
                     er = AnalysisRunnerSingle(ed)
                     er.do_workflow_limited_analysis(db_obj, num_workflows)
-                print ("Second pass completed for {0}".format(
-                    [ed._trace_id for ed in ed_list]))
+                print(("Second pass completed for {0}".format(
+                    [ed._trace_id for ed in ed_list])))
             if pre_trace_id:
                 break
     def get_num_workflows(self, db_obj, trace_id):
@@ -260,19 +260,19 @@ class AnalysisWorker(object):
                 there_are_more = ed.load_pending(db_obj)
             if there_are_more:
                 if ed.is_it_ready_to_process(db_obj):
-                    print "Analyzing grouped experiment {0}".format(
-                                                                ed._trace_id)
+                    print(("Analyzing grouped experiment {0}".format(
+                                                                ed._trace_id)))
                     er = AnalysisGroupRunner(ed)
                     er.do_full_analysis(db_obj)
             if trace_id:
                 break
             elif there_are_more:
-                print ("There are grouped experiments to be processed, but,"
+                print(("There are grouped experiments to be processed, but,"
                     "their subtrace are not ready yet. Sleeping for {0}s."
-                    "".format(sleep_time))
+                    "".format(sleep_time)))
             #    sleep(sleep_time)
             else:
-                print "No more experiments to process, exiting."
+                print("No more experiments to process, exiting.")
     def do_mean_utilizatin(self, db_obj, trace_id=None):
         ed = GroupExperimentDefinition()
         if trace_id:
@@ -280,10 +280,10 @@ class AnalysisWorker(object):
         else:
             trace_id_list=ed.get_exps_in_state(db_obj, "analysis_done")
             trace_id_list+=ed.get_exps_in_state(db_obj, "second_pass_done")
-        print "processing following group traces (utilization mean):{0}".format(
-               trace_id_list)
+        print(("processing following group traces (utilization mean):{0}".format(
+               trace_id_list)))
         for trace_id in trace_id_list:
-            print "Calculating for", trace_id
+            print(("Calculating for", trace_id))
             ed = GroupExperimentDefinition()
             ed.load(db_obj, trace_id=trace_id)
             er = AnalysisGroupRunner(ed)
@@ -316,12 +316,12 @@ class AnalysisWorker(object):
                 ed_single.load(db_obj, trace_id+1)
                 ed_multi.load(db_obj, trace_id+2)
                 ed_list=[ed_manifest, ed_single, ed_multi]
-                print ("Reading workflow info for traces: {0}".format(
-                    [ed._trace_id for ed in ed_list]))
+                print(("Reading workflow info for traces: {0}".format(
+                    [ed._trace_id for ed in ed_list])))
                 if (ed_manifest._workflow_handling!="manifest" or
                     ed_single._workflow_handling!="single" or
                     ed_multi._workflow_handling!="multi"):
-                    print ("Incorrect workflow handling for traces"
+                    print(("Incorrect workflow handling for traces"
                            "({0}, {1}, {2}): ({3}, {4}, {5})",format(
                                ed_manifest._trace_id,
                                ed_single._trace_id,
@@ -329,7 +329,7 @@ class AnalysisWorker(object):
                                ed_manifest._workflow_handling,
                                ed_single._workflow_handling,
                                ed_multi._workflow_handling)
-                           )
+                           ))
                     print ("Exiting...")
                     exit()
 
@@ -349,14 +349,14 @@ class AnalysisWorker(object):
                             num_workflows=min(num_workflows, exp_wfs)
                     list_num_workflows.append(num_workflows)
                 
-                print ("Final workflow count: {0}".format(list_num_workflows))
+                print(("Final workflow count: {0}".format(list_num_workflows)))
                 for ed in ed_list:
-                    print ("Doing second pass for trace: {0}".format(
-                        ed._trace_id))
+                    print(("Doing second pass for trace: {0}".format(
+                        ed._trace_id)))
                     er = AnalysisGroupRunner(ed)
                     er.do_workflow_limited_analysis(db_obj, list_num_workflows)
-                print ("Second pass completed for {0}".format(
-                    [ed._trace_id for ed in ed_list]))
+                print(("Second pass completed for {0}".format(
+                    [ed._trace_id for ed in ed_list])))
             if pre_trace_id:
                 break
         

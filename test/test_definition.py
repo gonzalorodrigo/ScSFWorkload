@@ -202,7 +202,7 @@ class TestExperimentDefinition(unittest.TestCase):
 
         
         ed_g2 = GroupExperimentDefinition()
-        print ed_g2._subtraces
+        print(ed_g2._subtraces)
         ed_g2.add_sub_trace(trace_id_1)
         ed_g2.store(self._db)
         
@@ -313,7 +313,7 @@ class TestExperimentDefinition(unittest.TestCase):
         
         for line in lines:
             if "END2" in line:
-                print ""
+                print("")
                 text_list=line.split("END2: [")[1]
                 text_list=text_list.split("]")[0]
                 other_ids = [int(x) for x in text_list.split(",")]
@@ -321,7 +321,7 @@ class TestExperimentDefinition(unittest.TestCase):
         self.assertGreater(len(other_ids), 0)
         for id in ids:
             self.assertNotIn(id, other_ids)
-        print ("IDs", ids, other_ids)
+        print(("IDs", ids, other_ids))
     
     def test_mark_simulating(self):
         ed = ExperimentDefinition()

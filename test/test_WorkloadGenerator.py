@@ -32,7 +32,7 @@ class TestWorkloadGenerator(unittest.TestCase):
     def test_reproduce(self):
         
         common_seed="MYSEED"
-        print "CC", common_seed.__hash__()
+        print("CC", common_seed.__hash__())
         tg1 = TraceGenerator()
         random_control.set_global_random_gen("AAAAA")
         
@@ -88,18 +88,18 @@ class TestWorkloadGenerator(unittest.TestCase):
         self._wg._generate_new_job(10001)
     
     def test_generate_trace(self):
-        new_date=int(datetime.datetime(2015,01,01).strftime('%s'))
+        new_date=int(datetime.datetime(2015,0o1,0o1).strftime('%s'))
         run_limit=10
         self._tg._long_test=True
-        self._wg.generate_trace(datetime.datetime(2015,01,01), run_limit)
+        self._wg.generate_trace(datetime.datetime(2015,0o1,0o1), run_limit)
         self.assertLessEqual(self._tg._add_job_calls, 10)
         self.assertGreaterEqual(self._tg._add_job_calls, 7)
     
     def test_generate_trace_job_count(self):
-        new_date=int(datetime.datetime(2015,01,01).strftime('%s'))
+        new_date=int(datetime.datetime(2015,0o1,0o1).strftime('%s'))
         run_limit=100000
         self._tg._long_test=True
-        self._wg.generate_trace(datetime.datetime(2015,01,01), run_limit,
+        self._wg.generate_trace(datetime.datetime(2015,0o1,0o1), run_limit,
                                 job_limit=5)
         self.assertEqual(self._tg._add_job_calls, 5)
         

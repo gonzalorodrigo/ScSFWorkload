@@ -17,5 +17,5 @@ while there_are_more:
     if there_are_more:
         ids.append(ed_f._trace_id)
 
-print "END2:", ids
-print "END3"
+print("END2:", ids)
+print("END3")

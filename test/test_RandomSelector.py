@@ -43,7 +43,7 @@ class TestPatternGenerator(unittest.TestCase):
         
         self.assertEqual(self._sel._obj_list, ["OBJ1", "OBJ2", "OBJ3"])
         for (a, b) in zip(self._sel._prob_list, [0.4, 0.6, 1.0]):
-            self.assertAlmostEquals(a,b)
+            self.assertAlmostEqual(a,b)
         
         self.assertEqual(self._sel.get_random_obj(), "OBJ1")
         self._sel.add_obj("OBJ4", 0.2)
@@ -55,12 +55,12 @@ class TestPatternGenerator(unittest.TestCase):
         self._sel.set([0.2, 0.4, 0.15], ["OBJ2", "OBJ3", "OBJ4"], "OBJ1")
         self.assertEqual(self._sel._obj_list,["OBJ1", "OBJ2", "OBJ3", "OBJ4"])
         for (a, b) in zip(self._sel._prob_list, [0.25, 0.45, 0.85, 1.0]):
-            self.assertAlmostEquals(a,b)
+            self.assertAlmostEqual(a,b)
             
         self._sel.set([0.2, 0.5, 0.3], ["OBJ2", "OBJ3", "OBJ4"])
         self.assertEqual(self._sel._obj_list,["OBJ2", "OBJ3", "OBJ4"])
         for (a, b) in zip(self._sel._prob_list, [0.2, 0.7, 1.0]):
-            self.assertAlmostEquals(a,b)
+            self.assertAlmostEqual(a,b)
         
         
 

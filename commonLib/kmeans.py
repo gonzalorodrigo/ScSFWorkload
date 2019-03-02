@@ -13,7 +13,7 @@ import numpy as np
 import scipy as sc
 import scipy.cluster.vq as vq
 
-import nerscRadar as nr
+from . import nerscRadar as nr
 def doKMeansOnDataV2(inputData, kGroups, doWhiten=True, inputCentroids=None, reduced=False):
      
 
@@ -40,7 +40,7 @@ def doKMeansOnDataV2(inputData, kGroups, doWhiten=True, inputCentroids=None, red
     if isItMac():
         n_jobs=1
    
-    print "calculating centroids. Parallel Degree:"+str(n_jobs)     
+    print("calculating centroids. Parallel Degree:"+str(n_jobs))     
 #    km=KMeans(n_clusters=kGroups, init='k-means++', \
 #                        n_init=10, max_iter=300, tol=0.0001,\
 #                        precompute_distances=True, verbose=0,\
@@ -64,10 +64,10 @@ def doKMeansOnDataV2(inputData, kGroups, doWhiten=True, inputCentroids=None, red
     #return centroids, labels
     
     #centroids, distortion=vq.kmeans(inputData, book)
-    print "centroids calculate"
-    print "getting the associated centroid for each point"
+    print("centroids calculate")
+    print("getting the associated centroid for each point")
     code, dist=vq.vq(inputData, centroids)
-    print "classification done"
+    print("classification done")
     return centroids, distortion, inputData, code, dist
 
 def isItMac():

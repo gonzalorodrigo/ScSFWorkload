@@ -29,14 +29,14 @@ class TestTimeController(unittest.TestCase):
         self.assertLess(self._controller._time_counter-right_now, 2)
         self.assertLess(self._controller._start_date-right_now, 2)
         
-        new_date=int(datetime.datetime(2015,01,01).strftime('%s'))
-        self._controller.reset_time_counter(datetime.datetime(2015,01,01))
+        new_date=int(datetime.datetime(2015,0o1,0o1).strftime('%s'))
+        self._controller.reset_time_counter(datetime.datetime(2015,0o1,0o1))
         self.assertEqual(self._controller._time_counter,new_date)
         self.assertEqual(self._controller._start_date,new_date)
         
     def test_get_next_job_create_time(self):
-        new_date=int(datetime.datetime(2015,01,01).strftime('%s'))
-        self._controller.reset_time_counter(datetime.datetime(2015,01,01))
+        new_date=int(datetime.datetime(2015,0o1,0o1).strftime('%s'))
+        self._controller.reset_time_counter(datetime.datetime(2015,0o1,0o1))
         
         self.assertEqual(new_date+3,
                         self._controller.get_next_job_create_time())
@@ -44,8 +44,8 @@ class TestTimeController(unittest.TestCase):
                         self._controller.get_next_job_create_time())
     
     def test_is_time_to_stop(self):
-        new_date=int(TimeController.get_epoch(datetime.datetime(2015,01,01)))
-        self._controller.reset_time_counter(datetime.datetime(2015,01,01))
+        new_date=int(TimeController.get_epoch(datetime.datetime(2015,0o1,0o1)))
+        self._controller.reset_time_counter(datetime.datetime(2015,0o1,0o1))
         self._controller.set_run_limit(6)
         self.assertEqual(new_date+3,
                         self._controller.get_next_job_create_time())

@@ -6,8 +6,6 @@
 
 from datetime import datetime as da
 import datetime
-import unittest
-
 from generate import WorkloadGenerator, TimeController
 from generate.overload import OverloadTimeController
 from generate.pattern import PatternGenerator, WorkflowGenerator, \
@@ -16,6 +14,8 @@ from generate.pattern import PatternGenerator, WorkflowGenerator, \
 from orchestration.definition import ExperimentDefinition
 from orchestration.running import ExperimentRunner
 from slurm.trace_gen import TraceGenerator
+import unittest
+
 from test_WorkloadGenerator import (FakeTraceGenWF, FakeEdison,
                                     FakeTraceGenWFSimple)
 
@@ -312,7 +312,7 @@ class MyTraceGen(TraceGenerator):
             if (last_submit_time-first_submit_time>time_window/2):
                 pressure=float(acc)/float(max_cores *
                                           (last_submit_time-first_submit_time))
-                test_obj.assertGreater(pressure, target_pressure)
+                test_obj.assertGreaterEqual(pressure, target_pressure)
                 test_obj.assertLess(pressure, target_pressure+upper_margin)
         
         return sum(cores), stamps[-1]-stamps[0]
@@ -357,7 +357,7 @@ class TestOverloadTimeController(unittest.TestCase):
         acc_cores, period=trace_generator.check_pressure(machine.get_total_cores(),
                                        3600, 1.5, self, 1.0)
         total_pressure=float(acc_cores)/float(period*machine.get_total_cores())
-        print total_pressure
+        print(total_pressure)
         self.assertAlmostEqual(total_pressure, 1.5, delta=0.01)
         self.assertLess(total_pressure, 1.8)
 

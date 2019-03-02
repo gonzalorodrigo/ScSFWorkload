@@ -6,7 +6,7 @@ def openReadFile(file):
 		
 		return f
 	except:
-		print "Can't open file"
+		print("Can't open file")
 		return 0
 
 def openWriteFile(file):
@@ -15,7 +15,7 @@ def openWriteFile(file):
 		
 		return f
 	except:
-		print "Can't open file"
+		print("Can't open file")
 		return 0
 	
 

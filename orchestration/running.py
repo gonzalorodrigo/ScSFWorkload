@@ -1,20 +1,21 @@
+from datetime import timedelta
+from os import path
+import os
+import shutil
+import subprocess
+from time import sleep
+
 from generate import WorkloadGenerator, TimeController
+from generate.overload import OverloadTimeController
 from generate.pattern import (WorkflowGeneratorSingleJob, RepeatingAlarmTimer,
                               WorkflowGeneratorMultijobs, PatternGenerator)
 from generate.special import SpecialGenerators
 from generate.special.machine_filler import filler
-from slurm.trace_gen import TraceGenerator
-import os
 import random_control
-import shutil
-import subprocess
-
-from os import path
-from datetime import timedelta
+from slurm.trace_gen import TraceGenerator
 from stats.trace import ResultTrace
 from tools.ssh import SSH
-from time import sleep
-from generate.overload import OverloadTimeController
+
 
 class ExperimentRunner(object):
     """Class capable of taking an experiment definition, generate its workload,
@@ -139,13 +140,13 @@ class ExperimentRunner(object):
         status=True
         end_time = self._definition.get_end_epoch()
         if len(result_trace._lists_start["time_end"])==0:
-            print "Error: No simulated jobs"
+            print("Error: No simulated jobs")
             return False
         last_job_end_time=result_trace._lists_submit["time_submit"][-1]
         if last_job_end_time < (end_time-600):
-            print "Simulation ended too soon: {0} vs. expected {1}.".format(
+            print(("Simulation ended too soon: {0} vs. expected {1}.".format(
                                                     last_job_end_time,
-                                                    end_time)
+                                                    end_time)))
             status= False
         result_trace.store_trace(store_db_obj, self._definition._trace_id)    
         return status
@@ -167,7 +168,7 @@ class ExperimentRunner(object):
         """
         if trace_generator is None:
             trace_generator = TraceGenerator()
-        print "This is the seed to be used:", definition._seed
+        print(("This is the seed to be used:", definition._seed))
         random_control.set_global_random_gen(seed=definition._seed)
         machine=definition.get_machine()
         (filter_cores, filter_runtime, 
@@ -193,7 +194,7 @@ class ExperimentRunner(object):
                 raise ValueError("Only 'single' experiments require trace "
                                  "generation")
             if definition.get_overload_factor()>0.0:
-                print "doing overload:", definition.get_overload_factor()
+                print(("doing overload:", definition.get_overload_factor()))
                 max_cores=machine.get_total_cores()
                 single_job_gen = PatternGenerator(wg)
                 overload_time = OverloadTimeController(
@@ -204,7 +205,7 @@ class ExperimentRunner(object):
                                 trace_generator,
                                 max_cores,
                             overload_target=definition.get_overload_factor())
-                print "about to register", wg, overload_time    
+                print(("about to register", wg, overload_time))    
                 wg.register_pattern_generator_timer(overload_time)
           
             manifest_list = [m["manifest"] for m in definition._manifest_list]
@@ -248,8 +249,8 @@ class ExperimentRunner(object):
                       float((definition._preload_time_s +
                             definition._workload_duration_s)*max_cores)
                       )
-        print ("Observed job pressure (bound): {0}".format(
-                    job_pressure))
+        print(("Observed job pressure (bound): {0}".format(
+                    job_pressure)))
                            
         trace_generator.dump_trace(path.join(
                                       ExperimentRunner._trace_generation_folder,
@@ -320,13 +321,13 @@ class ExperimentRunner(object):
     def _refresh_machine(self):
         """Reboots the worker and waits until it is ready."""
         command=["sudo", "/sbin/shutdown", "-r", "now"] 
-        print "About to reboot the machine, waiting 60s"
+        print("About to reboot the machine, waiting 60s")
         self._exec_dest(command)
         sleep(60)
         while not "hola" in self._exec_dest(["/bin/echo", "hola"]):
-            print "Machine is not ready yet, waiting 30s more..."
+            print("Machine is not ready yet, waiting 30s more...")
             sleep(30)
-        print "Wait done, machine should be ready."
+        print("Wait done, machine should be ready.")
 
     def stop_simulation(self):
         """Stops the scheduler and simulator. Non graceful stop."""
@@ -345,7 +346,7 @@ class ExperimentRunner(object):
                         path.join(
                         ExperimentRunner._trace_folder, trace_file), 
                         "./sim_mgr.log"]
-        print "About to run simulation: \n{0}".format(" ".join(command))
+        print(("About to run simulation: \n{0}".format(" ".join(command))))
         self._exec_dest(command, background=True)
         running=False
         for i in range(6*10):
@@ -353,9 +354,9 @@ class ExperimentRunner(object):
             try:
                 running = self.is_sim_running()
             except SystemError:
-                print "Failed comms to machine, keep trying."
+                print("Failed comms to machine, keep trying.")
 
-            print "Is Simulation running?", running
+            print(("Is Simulation running?", running))
             if running:
                 break
         if not running:
@@ -433,12 +434,12 @@ class ExperimentRunner(object):
                 failed_comms_count=0
             except:
                 failed_comms_count+=1
-                print("Failed commons while checking is sim was done, failed"
-                      " count: {0}".format(failed_comms_count))
+                print(("Failed commons while checking is sim was done, failed"
+                      " count: {0}".format(failed_comms_count)))
             total_time=count*wait_time
-            print "Simulation has not ended. Wait time: {0}:{1}:{2}".format(
+            print(("Simulation has not ended. Wait time: {0}:{1}:{2}".format(
                                       total_time/3600, (total_time/60)%60,
-                                      total_time%60  )
+                                      total_time%60  )))
             count+=1
             sleep(wait_time)
         

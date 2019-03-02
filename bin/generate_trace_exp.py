@@ -9,18 +9,18 @@ python generate_trace.pt trace_id
 trace_id: numeric id of the experiment.
 """
 
-from orchestration import ExperimentDefinition
-from orchestration.running import ExperimentRunner
-from orchestration import get_central_db
-
 import sys
-    
+
+from orchestration import ExperimentDefinition
+from orchestration import get_central_db
+from orchestration.running import ExperimentRunner
+
 
 trace_id=None
 if len(sys.argv)>=2:
     trace_id=sys.argv[1]
 else:
-    print "Missing experiment trace_id."
+    print("Missing experiment trace_id.")
     exit()
     
 ExperimentRunner.configure(

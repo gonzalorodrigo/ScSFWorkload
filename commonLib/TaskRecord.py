@@ -94,8 +94,8 @@ class TaskRecord:
     
     @classmethod
     def getAltUserName(self, user):
-        if not user in self.userNames.keys():
-            self.userNames[user]=len(self.userNames.keys())
+        if not user in list(self.userNames.keys()):
+            self.userNames[user]=len(list(self.userNames.keys()))
         return "FakeUser"+str(self.userNames[user])
         
     
@@ -104,7 +104,7 @@ class TaskRecord:
         return self.fieldNames
     
     def duration(self):
-        if "wallclock" in self.valuesDic.keys():
+        if "wallclock" in list(self.valuesDic.keys()):
             return self.getVal("wallclock")
         else:
             return self.getVal("completion")-self.getVal("start")+1
@@ -124,11 +124,11 @@ class TaskRecord:
 #            setattr(self, field, dic[field])
         return self
     def isFieldDef(self, field):
-        return field in self.valuesDic.keys()
+        return field in list(self.valuesDic.keys())
     
     def is_long(self, s):
         try:
-            long(s)
+            int(s)
             return True
         except ValueError:
             return False
@@ -145,13 +145,13 @@ class TaskRecord:
             mainFields=" ".join(line.split(" ")).split()
             self.setField("hostname", hostname)
             self.setField("stepid", "m-"+hostname+"-"+mainFields[3])
-            print "Field:"+mainFields[3]
+            print("Field:"+mainFields[3])
           #  print mainFields
             for (index, field) in zip(self.simpleTextIndexesMoab, self.simpleTextFields):
                 self.setField(field, mainFields[index])
             
             for (index, field) in zip(self.simpleNumericIndexesMoab, self.simpleNumericFieldsMoab):
-                print index, field, mainFields[index]
+                print(index, field, mainFields[index])
                 self.setField(field, int(mainFields[index]))
                 
             #tasksPerNode=int(mainFields[24])
@@ -179,7 +179,7 @@ class TaskRecord:
            # exit()
             return True
     #   except:
-            print "Error in MOAB  format / parsing: "+line
+            print("Error in MOAB  format / parsing: "+line)
             return False
 
     
@@ -210,7 +210,7 @@ class TaskRecord:
                 subFields[words[0]]=words[1]
             #print subFields
             for field in self.subfieldIndexes:
-                if (not field in subFields.keys()):
+                if (not field in list(subFields.keys())):
                     subFields[field]=0
             #print subFields
                 
@@ -220,17 +220,17 @@ class TaskRecord:
             for (field, index) in zip(self.simpleTextFields, self.simpleTextIndexes):
                 self.setField(field, str(subFields[index]))
             for (field, index) in zip(self.simpleNumericFields, self.simpleNumericIndexes):
-                self.setField(field, long(subFields[index]))
+                self.setField(field, int(subFields[index]))
             for (field, index) in zip(self.timeCountFields, self.timeCountIndexes):
                 text=subFields[index]
                 if (text==0):
                     text="00:00:00"
-                num=long(0)
+                num=int(0)
          #       print text
                 words=text.split(":")
-                num+=long(words[0])*3600
-                num+=long(words[1])*60
-                num+=long(words[2])
+                num+=int(words[0])*3600
+                num+=int(words[1])*60
+                num+=int(words[2])
                 self.setField(field, num)
             for (field, index) in zip(self.memFields, self.memIndexes):
           
@@ -238,7 +238,7 @@ class TaskRecord:
                 if (text==0):
                     text="0kb"
          #       print text
-                num=long(text.split("kb")[0])
+                num=int(text.split("kb")[0])
                 self.setField(field, num)
             
             # If any fields are empty we put a 0
@@ -250,21 +250,21 @@ class TaskRecord:
             if ("carver" in hostname):
                 nodes=1
                 coresPerNode=1
-                if (self.carverNodeField in subFields.keys()):
+                if (self.carverNodeField in list(subFields.keys())):
                     text=subFields[self.carverNodeField]
                     #print text
                     if self.is_long(text):
-                        nodes=long(text)
+                        nodes=int(text)
                     else:
                         nodes=len(text.split("+"))
             
              
                     
-                    if ("ppn" in subFields.keys()):
+                    if ("ppn" in list(subFields.keys())):
                         text=subFields["ppn"]
                         words=text.split(":")
                         if (len(words)>0):
-                            coresPerNode=long(words[0])
+                            coresPerNode=int(words[0])
                         nodeType=""
                         if (len(words)>1):
                             nodeType=words[1]
@@ -291,7 +291,7 @@ class TaskRecord:
 
             return True
         except:
-            print "Error in format / parsing: "+line
+            print("Error in format / parsing: "+line)
             return False
     #except:
         #    print "Error parsing: "+line

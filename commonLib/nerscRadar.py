@@ -1,6 +1,6 @@
 from commonLib.nerscLib import *
 import sys
-import filemanager as fm
+from . import filemanager as fm
 import numpy as np
 from numpy.random import * 
 from commonLib import nerscPlot
@@ -152,7 +152,7 @@ def dicToArr(dicList, queueNames, logScale):
     #return np.transpose(np.array(arr))
 def doMultivarCompare(hostname, variableDictionaries, varNames, queueNames, maxDistance, logScale=False, dir="./"):
 
-    print "Comparing Vars ("+",".join(varNames)+"), maxDistance="+str(maxDistance)
+    print("Comparing Vars ("+",".join(varNames)+"), maxDistance="+str(maxDistance))
     data=dicToArr(variableDictionaries, queueNames, logScale)
     #print data.shape
     subName=""
@@ -207,7 +207,7 @@ def whiten(inputPoints, normalized=True, weights=None):
     return vq.whiten(p), p
 
 def trimData(inputPoints, per):
-    print "Shape", inputPoints.shape
+    print("Shape", inputPoints.shape)
     removeIndex=[]
     for j in range(inputPoints.shape[1]):
         column=inputPoints[:,j]
@@ -293,17 +293,17 @@ def doKMeansSearchV2(wallClock, taskCores, numberOfRegions, numberOfRepeats, one
             
                 if (minSizeFound!=None):
                     if numberOfRegions>=minSizeFound:
-                        print "We already found a better soultion before-Inner"
+                        print("We already found a better soultion before-Inner")
                         break
                     else:
-                        print "This solution is still better that anything else found-Inner"
+                        print("This solution is still better that anything else found-Inner")
               
             
-            print "Searching for the number of required regions. Testing: "+str(numberOfRegions)
+            print("Searching for the number of required regions. Testing: "+str(numberOfRegions))
             to=timeLib.getTS()
             centroids2, overalDistortion, points, association, dist = \
                 doKMeansOnDataV2(inputPointsWhiten,numberOfRegions, False, inputCentroids=inputCentroids, reduced=reduced)
-            print "Time to do one K-means process:"+str(timeLib.getFinalT(to))
+            print("Time to do one K-means process:"+str(timeLib.getFinalT(to)))
             #print "First analysis, Wallclock"
             #print centroids2
             #print str(labels2)
@@ -318,7 +318,7 @@ def doKMeansSearchV2(wallClock, taskCores, numberOfRegions, numberOfRepeats, one
             else:
                 meanList, stdevList, cvList= calculateCVForClusters(centroids2, points, association)
             #print "Centroid:", centroids2
-                print "CV:", cvList
+                print("CV:", cvList)
                 outCentroids=[]
                 found=True
                 inputCentroids=np.empty((0,2))
@@ -346,12 +346,12 @@ def doKMeansSearchV2(wallClock, taskCores, numberOfRegions, numberOfRepeats, one
         # it wasnt found
         
         if (found):
-            print "Found Points!"
+            print("Found Points!")
             dataDic[numberOfRegions]= [centroids2, overalDistortion, points, association, dist]
             break
     if (found):    
         centroids2, overalDistortion, points, association, dist=dataDic[numberOfRegions]
-        print "in the end:"+str(len(dataDic.keys()))
+        print("in the end:"+str(len(list(dataDic.keys()))))
     return numberOfRegions, inverseWhiten(centroids2, inputPoints, \
                     inputPointsNormalized, normalized, weights), overalDistortion, \
                     inputPoints, association, dist, found
@@ -376,7 +376,7 @@ def doKMeansSearch(wallClock, taskCores, numberOfRegions, numberOfRepeats, oneDi
         searchedNumbers.append(numberOfRegions)
         while repeats > 0 and not found:
             
-            print "Searchinf for the number of required regions. Testing: "+str(numberOfRegions)
+            print("Searchinf for the number of required regions. Testing: "+str(numberOfRegions))
             centroids2, overalDistortion, points, association, dist = doKMeansOnData([wallClock, taskCores],numberOfRegions, False)
 
             #print "First analysis, Wallclock"
@@ -393,7 +393,7 @@ def doKMeansSearch(wallClock, taskCores, numberOfRegions, numberOfRepeats, oneDi
             else:
                 meanList, stdevList, cvList= calculateCVForClusters(centroids2, points, association)
             #print "Centroid:", centroids2
-                print "CV:", cvList
+                print("CV:", cvList)
             
                 found=True
                 for cv in cvList:
@@ -423,10 +423,10 @@ def doKMeansSearch(wallClock, taskCores, numberOfRegions, numberOfRepeats, oneDi
                     found=True
         else:
             if not dicotomicSearch:
-                print "incres # regions"
+                print("incres # regions")
                 numberOfRegions*=2
                 if (numberOfRegions>maxRegions):
-                    print "Max number of regions ("+str(numberOfRegions)+"/"+str(maxRegions)+") achieved"
+                    print("Max number of regions ("+str(numberOfRegions)+"/"+str(maxRegions)+") achieved")
                     maxRegionsAchieved=True
                     
             else:
@@ -488,12 +488,12 @@ def doKMeansOnDataV2(inputData, kGroups, doWhiten=True, inputCentroids=None, red
 
     #centroids, labels=vq.kmeans2(inputData, kGroups)
     #return centroids, labels
-    print "calculating centroids"
+    print("calculating centroids")
     centroids, distortion=vq.kmeans(inputData, book)
-    print "centroids calculate"
-    print "getting the associated centroid for each point"
+    print("centroids calculate")
+    print("getting the associated centroid for each point")
     code, dist=vq.vq(inputData, centroids)
-    print "classification done"
+    print("classification done")
     return centroids, distortion, inputData, code, dist
 
 
@@ -535,11 +535,11 @@ def getClusterAssociationAutomatic(hostname,taskSizes, taskCores, centroidsRoute
 def divideListsByAssociation(dicLists, assocList):
      outDic={}
      index=0
-     for key in dicLists.keys():
+     for key in list(dicLists.keys()):
              outDic[key]={}
      for assoc in assocList:
-        for key in dicLists.keys():
-            if not str(assoc) in outDic[key].keys():
+        for key in list(dicLists.keys()):
+            if not str(assoc) in list(outDic[key].keys()):
                 outDic[key][str(assoc)]=[]
 
             outDic[key][str(assoc)].append(dicLists[key][index])
@@ -571,19 +571,19 @@ def doKMeansOnCPUCoresMem(cpu, cores, mem):
     
 def normDic(dic):
     newDic= {}
-    for k in dic.keys():
+    for k in list(dic.keys()):
         newDic[k]={}
         subDic=dic[k]
         c=0
-        for k2 in subDic.keys():
+        for k2 in list(subDic.keys()):
             c+=subDic[k2]
        # print c
         c=float(c)
         if (c!=0):
-            for k2 in subDic.keys():
+            for k2 in list(subDic.keys()):
                 newDic[k][k2]=float(float(subDic[k2])/c)
         else:
-            for k2 in subDic.keys():
+            for k2 in list(subDic.keys()):
                 newDic[k][k2]=float(float(subDic[k2]))
     return newDic
     
@@ -613,18 +613,18 @@ def countRegionsInQueues(points, asociation, queuePerPoint):
     
     
     for point, asoc, q in zip(points, asociation, queuePerPoint):
-        if not q in queues.keys():
+        if not q in list(queues.keys()):
             queues[q]={}
             queues_ch[q]={}
-        if not asoc in queues[q].keys():
+        if not asoc in list(queues[q].keys()):
             queues[q][asoc]=0
             queues_ch[q][asoc]=0
         queues[q][asoc]+=1
         queues_ch[q][asoc]+=point[0]*point[1]
         
-        if not asoc in regions.keys():
+        if not asoc in list(regions.keys()):
             regions[asoc]={}
-        if not q in regions[asoc].keys():
+        if not q in list(regions[asoc].keys()):
             regions[asoc][q]=0
         regions[asoc][q]+=1
         
@@ -707,9 +707,9 @@ def calculateCVForClusters1D(centroids, points, association):
 def withinBoundCV(centroids, points, association, bound):
     means, stDevs, CVs = calculateCVForClusters1D(centroids, points, association)
     for c in CVs:
-        print c
-        for k, CV in c.iteritems():
-            print CV
+        print(c)
+        for k, CV in c.items():
+            print(CV)
             if CV>bound:
                 return False
     return True

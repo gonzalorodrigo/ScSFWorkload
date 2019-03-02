@@ -12,7 +12,7 @@ from commonLib import nerscRadar as nr
 from commonLib import timeLib
 from commonLib.DBManager import DB
 from commonLib.TaskRecord import TaskRecord
-import filemanager as fm
+from . import filemanager as fm
 import numpy as np
 import scipy as sc
 import scipy.cluster.vq as vq
@@ -44,7 +44,7 @@ def groupValuesByKeys(keys, values, upper_edges_bins):
 
 def doMedianOnDic(in_dic):
     out_dic = {}
-    for (key, values) in in_dic.iteritems():
+    for (key, values) in in_dic.items():
         if len(values) > 0:
             val = np.median(values)
             if (val!=val):
@@ -61,7 +61,7 @@ def dumpRecordsMoab(taskRecords, fileRoute, reassignClusters=False, hostname=Non
     if (reassignClusters):
         route=nr.getCentroidsRoute(hostname)
         centroids=nr.getCentroids(route)
-        print "Centroids loaded: "+str(centroids.shape[0])
+        print("Centroids loaded: "+str(centroids.shape[0]))
         
         
     
@@ -107,7 +107,7 @@ def getEpoch(year, month=1, day=1):
 
 def getDB(host="localhost", dbName="nerc", userName="nersc", password="nersc", \
           port="3306", useTunnel=False):
-    print dbName, port
+    print(dbName, port)
     d= DB(host, dbName, userName, password, port=port, useTunnel=useTunnel)
     #d.connect()
     return d
@@ -115,7 +115,7 @@ def getDB(host="localhost", dbName="nerc", userName="nersc", password="nersc", \
 # Functions around the summary table    
 def parseFromSQL(dbName="nersc", hostname="", userName="nersc", password="nersc", dbHost="localhost", dbPort="3306", year=-1, month=-1, day=-1, \
                  endYear=-1, endMonth=-1, endDay=-1, timeAdjust=0, orderingField=None, filtered=False):
-    print "Loading Records"
+    print("Loading Records")
     items=[]
     db=getDB(dbName=dbName, userName=userName, password=password, host=dbHost)
 
@@ -130,7 +130,7 @@ def parseFromSQL(dbName="nersc", hostname="", userName="nersc", password="nersc"
     if (year!=-1):
         startEpoch=getEpoch(year, m, d)+timeAdjust
         condition="start>="+str(startEpoch)
-        print "START:"+str(startEpoch)
+        print("START:"+str(startEpoch))
    # print condition
    
     if (endYear!=-1):
@@ -142,23 +142,23 @@ def parseFromSQL(dbName="nersc", hostname="", userName="nersc", password="nersc"
             ed=endDay
         endEpoch=getEpoch(endYear, em, ed)
         condition+=" and start<="+str(endEpoch)
-        print "STOP:"+str(endEpoch)
+        print("STOP:"+str(endEpoch))
     if filtered:
         condition+=" and filtered=False"
-        print "Filtered TASKS"
+        print("Filtered TASKS")
     to=timeLib.getTS()
     if (hostname==""):
         rows=db.getValuesDicList("summary", TaskRecord.getFields(), condition=condition, orderBy=orderingField)
     else:
         rows=db.getValuesDicList("summary", TaskRecord.getFields(), condition=condition+" and "+"hostname='"+hostname+"'", orderBy=orderingField)
-    print "Time to Retrieve SQL Records:"+str(timeLib.getFinalT(to))
-    print "Records Loaded"
-    print "Parsing Records"
+    print("Time to Retrieve SQL Records:"+str(timeLib.getFinalT(to)))
+    print("Records Loaded")
+    print("Parsing Records")
     to=timeLib.getTS()
     for row in rows:
         items.append(TaskRecord().parseSQL(row))
-    print "Records parsed: "+str(len(items))
-    print "Time to Parse SQL Records:"+str(timeLib.getFinalT(to))
+    print("Records parsed: "+str(len(items)))
+    print("Time to Parse SQL Records:"+str(timeLib.getFinalT(to)))
     rows=None
     gc.collect()
     return items
@@ -177,7 +177,7 @@ def getTimeStamp(year, month, day, timeAdjust=0, shiftStart=0):
 def parseFromSQL_LowMem(dbName="nersc", hostname="", userName="nersc", password="nersc", dbHost="localhost", dbPort="3306", year=-1, month=-1, day=-1, startEpoch=-1,\
                  endYear=-1, endMonth=-1, endDay=-1, endEpoch=-1, timeAdjust=0, orderingField=None, filtered=False, fieldDate="start",
                  shiftStart=0, condition="True", useTunnel=False):
-    print "Loading Records", dbPort
+    print("Loading Records", dbPort)
     items=[]
     db=getDB(dbName=dbName, userName=userName, password=password, host=dbHost, port=dbPort, useTunnel=useTunnel)
     significantStart=startEpoch
@@ -198,7 +198,7 @@ def parseFromSQL_LowMem(dbName="nersc", hostname="", userName="nersc", password=
     
     if (startEpoch!=-1):
         condition+=" AND "+fieldDate+">="+str(startEpoch)
-        print "START:"+str(startEpoch)
+        print("START:"+str(startEpoch))
    # print condition
     if (endEpoch==-1):
         if (endYear!=-1):
@@ -213,18 +213,18 @@ def parseFromSQL_LowMem(dbName="nersc", hostname="", userName="nersc", password=
     if endEpoch!=-1:
         
         condition+=" and "+fieldDate+"<="+str(endEpoch)
-        print "STOP:"+str(endEpoch)
+        print("STOP:"+str(endEpoch))
     if filtered:
         condition+=" and filtered=False"
-        print "Filtered TASKS"
+        print("Filtered TASKS")
     to=timeLib.getTS()
     if (hostname==""):
         cur=db.getValuesDicList_LowMem("summary", TaskRecord.getFields(), condition=condition, orderBy=orderingField)
     else:
         cur=db.getValuesDicList_LowMem("summary", TaskRecord.getFields(), condition=condition+" and "+"hostname='"+hostname+"'", orderBy=orderingField)
-    print "Time to Retrieve SQL Records:"+str(timeLib.getFinalT(to))
-    print "Records Loaded"
-    print "Parsing Records"
+    print("Time to Retrieve SQL Records:"+str(timeLib.getFinalT(to)))
+    print("Records Loaded")
+    print("Parsing Records")
     
     to=timeLib.getTS()
     end=False
@@ -249,8 +249,8 @@ def parseFromSQL_LowMem(dbName="nersc", hostname="", userName="nersc", password=
             
         
    
-    print "Records parsed: "+str(len(items))
-    print "Time to Parse SQL Records:"+str(timeLib.getFinalT(to))
+    print("Records parsed: "+str(len(items)))
+    print("Time to Parse SQL Records:"+str(timeLib.getFinalT(to)))
     rows=None
     
     db.close_LowMem(cur)
@@ -261,14 +261,14 @@ def parseFromSQL_LowMem(dbName="nersc", hostname="", userName="nersc", password=
 
 
 def insertIntoDB(db, listRecords):
-    print "inserting Records"
+    print("inserting Records")
 
     for record in listRecords:
        # print "record", record
-        db.insertValues("summary", record.keys(), record.values())
+        db.insertValues("summary", list(record.keys()), list(record.values()))
 
 def insertIntoDBMany(db, listRecords):
-    print "inserting Records"
+    print("inserting Records")
 
     db.insertValuesMany("summary", listRecords)        
         
@@ -276,7 +276,7 @@ def insertIntoDBMany(db, listRecords):
         
 
 def readFileAndInsertDB(fileName, hostname, dbName="custom", moabFormat=False):
-    print "Opening:"+fileName
+    print("Opening:"+fileName)
     f=fm.openReadFile(fileName)
     lines=f.readlines()
     
@@ -300,8 +300,8 @@ def readFileAndInsertDB(fileName, hostname, dbName="custom", moabFormat=False):
     if len(parsedRecords)>0:
         #print "Dumping "+str(len(parsedRecords))+" records on DB "+dbName
         insertIntoDBMany(db, parsedRecords)
-    print 
-    print "Dump done"
+    print() 
+    print("Dump done")
     f.close()
             
             
@@ -319,7 +319,7 @@ def GetTasksPerJobWithNoFailure(rows):
         if (status<0):
             jobCount[jobName]=-1
         else:
-            print jobName
+            print(jobName)
             
             if jobName in jobCount:
                 if (jobCount[jobName]>0):
@@ -389,7 +389,7 @@ def getValueFromRow(row, field):
     return value
 
 def getSelectedDataFromRows(rows, dataFields, queueFields=[], accFields=[]):
-    print "Starting Data Selection"
+    print("Starting Data Selection")
     to=timeLib.getTS()
     
     outputDic=createFieldDic(dataFields)
@@ -409,9 +409,9 @@ def getSelectedDataFromRows(rows, dataFields, queueFields=[], accFields=[]):
     for row in rows:
         currentQueue=row.getVal("class")
         currentGQueue=row.getVal("classG")
-        if (not currentQueue in queues.keys()):
+        if (not currentQueue in list(queues.keys())):
             queues[currentQueue]=0
-        if (not currentGQueue in queuesG.keys()):
+        if (not currentGQueue in list(queuesG.keys())):
             queuesG[currentGQueue]=0
         queues[currentQueue]+=1
         queuesG[currentGQueue]+=1
@@ -427,13 +427,13 @@ def getSelectedDataFromRows(rows, dataFields, queueFields=[], accFields=[]):
         for field in queueFields:
       
             fieldDic=queueDic[field]
-            if (not currentQueue in fieldDic.keys()):
+            if (not currentQueue in list(fieldDic.keys())):
                 fieldDic[currentQueue]=[]
             fieldDic[currentQueue].append(getValueFromRow(row, field))
             
           
             fieldDic=queueGDic[field]
-            if (not currentGQueue in fieldDic.keys()):
+            if (not currentGQueue in list(fieldDic.keys())):
                 fieldDic[currentGQueue]=[]
             fieldDic[currentGQueue].append(getValueFromRow(row, field))
             
@@ -449,7 +449,7 @@ def getSelectedDataFromRows(rows, dataFields, queueFields=[], accFields=[]):
 #            queueGDic[currentQueue]=createFieldDic(queueFields)
 #        for field in queueFields:
 #            queueGDic[currentQueue][field].append(getValueFromRow(row, field))
-    print "Time to extract information:"+str(timeLib.getFinalT(to))
+    print("Time to extract information:"+str(timeLib.getFinalT(to)))
     return len(rows), outputDic, outputAcc, queues, queueDic, queuesG, queueGDic
             
                 
@@ -503,7 +503,7 @@ def getDataFromRows(rows, globalEdges):
         specialCPUTimeAcumulator[getBin(row.duration(), globalEdges)]+=row.getVal("numnodes")*numCoresPerNode*row.duration()
         
         c=row.getVal("class")
-        if not c in classTaskDuration.keys():
+        if not c in list(classTaskDuration.keys()):
             classTaskDuration[c]=[]
             classTaskCPUTime[c]=0
             classCores[c]=[]
@@ -537,7 +537,7 @@ def getCompareDics(dbName, hostname, dbHost, userName, password, year, month=1, 
         classTaskMemory, classTaskVMemory, classOfPoint =getDataFromRows(rows, "")
     return [wallClock, taskCores, taskMemory, classOfPoint], [classCores, classTaskCPUTimeDistro, classTaskDuration, classTaskMemory, classTaskVMemory]
 def fuseDics(old, new, prefix):
-    for key in new.keys():
+    for key in list(new.keys()):
         old[prefix+"-"+key]=new[key]
     return old
 def fuseLists(old, new, prefix):
@@ -575,7 +575,7 @@ def getFusedDics(dbName, hostnames, dbHost, userName, password, year, month=1, e
             finalDics.append(fuseDics(old, new, prefix))
         allDics=finalDics
         
-    return allLists, allDics, allDics[0].keys()
+    return allLists, allDics, list(allDics[0].keys())
 
 def dumpClusters(fileName, centroids, associations, points, queuePerPoint, classDuration, classCores):
     np.save(fileName+"-cent", centroids)
@@ -609,7 +609,7 @@ def load_obj(name ):
 def getSeed(forced=None):
     if (forced==None):
         np.random.seed()
-        return np.random.randint(0, sys.maxint)
+        return np.random.randint(0, sys.maxsize)
     else:
         return forced
     

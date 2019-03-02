@@ -262,8 +262,8 @@ class TestExperimentRunner(unittest.TestCase):
                                   * int(rec["CORES_PER_TASK"])
                                   * int(rec["DURATION"]))
             
-            print "pressure Index:", (float(acc_core_hours) / 
-                                      float(total_cores*workload_duration))
+            print("pressure Index:", (float(acc_core_hours) / 
+                                      float(total_cores*workload_duration)))
             self.assertGreater(acc_core_hours, 
                                   1.1*total_cores*workload_duration)
             self.assertLess(acc_core_hours, 

@@ -1,5 +1,5 @@
 from analysis.jobAnalysis import calculate_histogram
-import cPickle
+import pickle
 import MySQLdb
 import numpy as np
 
@@ -43,7 +43,7 @@ class Result(object):
         
         Raises SystemError exception if insertiln fails. 
         """
-        keys  = self._data.keys()
+        keys  = list(self._data.keys())
         values = [self._encode(self._data[key], key) for key in keys]
         keys = ["trace_id", "type"] + keys
         values= [trace_id, measurement_type] + values
@@ -76,7 +76,7 @@ class Result(object):
         self._data[data_name] = data_value
     
     def _get(self, data_name):
-        if data_name in self._data.keys():
+        if data_name in list(self._data.keys()):
             return self._data[data_name]
         return None
     
@@ -166,11 +166,14 @@ class Histogram(Result):
                 )""".format(self._table_name)
     
     def _encode(self, data_value, key):
+        import codecs
         """Datbase uses blobls to store the edges and bins"""
-        pickle_data = cPickle.dumps(data_value)
-        return MySQLdb.escape_string(pickle_data)
+        pickle_data = pickle.dumps(data_value)
+        return codecs.encode(pickle_data, "base64").decode()
     def _decode(self, blob, key):
-        return cPickle.loads(blob)
+        import codecs
+        pickle_data=codecs.decode(blob, "base64")
+        return pickle.loads(pickle_data)
 
 class NumericList(Result):
     
@@ -186,7 +189,7 @@ class NumericList(Result):
         return cad
 
     def set_dic(self, the_dic):
-        for (key,value) in the_dic.iteritems():
+        for (key,value) in the_dic.items():
             self._set(key, value)
     
     def apply_factor(self, factor):

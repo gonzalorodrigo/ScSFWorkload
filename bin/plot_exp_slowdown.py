@@ -71,11 +71,11 @@ no_wf_slowdown=get_slowdown(db_obj, no_wf_slowdown_id)
 
 for trace_id in range(first_id, 
                     last_id):
-    print "TRACE_ID", trace_id
+    print("TRACE_ID", trace_id)
     exp = ExperimentDefinition()
     exp.load(db_obj, trace_id)
     if not exp.is_it_ready_to_process():
-        print "not ready"
+        print("not ready")
         slowdown = {}
         for edge in edge_keys:
             slowdown[edge] = []

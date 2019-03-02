@@ -188,7 +188,7 @@ class TestWorkflowDeltas(unittest.TestCase):
         wf_d_2 = WorkflowDeltas()
         results_2 = wf_d_2.load_delta_results(db_obj, 1)
         
-        for field in results_1.keys():
+        for field in list(results_1.keys()):
             assertEqualResult(self, results_1[field], 
                               results_2[field], field)
         

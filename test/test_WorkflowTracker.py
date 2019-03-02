@@ -5,14 +5,16 @@
  
 """
 from commonLib.DBManager import DB
-from stats.workflow import TaskTracker, WorkflowTracker, WorkflowsExtractor,\
-    WasteExtractor, _fuse_delta_lists
-from stats import Histogram, NumericStats
-from test_ResultTrace import FakeDBObj
-from test_Result import assertEqualResult
 from commonLib.nerscUtilization import _apply_deltas_usage
 import os
+from stats import Histogram, NumericStats
+from stats.workflow import TaskTracker, WorkflowTracker, WorkflowsExtractor, \
+    WasteExtractor, _fuse_delta_lists
 import unittest
+
+from test_Result import assertEqualResult
+from test_ResultTrace import FakeDBObj
+
 
 class TestWorkflowsExtractor(unittest.TestCase):
     
@@ -52,7 +54,7 @@ class TestWorkflowsExtractor(unittest.TestCase):
         we.extract(job_list)
         
         self.assertEqual(len(we._workflows), 2)
-        self.assertEqual(we._workflows.keys(), ["manifest-2", "manifest-3"])
+        self.assertEqual(list(we._workflows.keys()), ["manifest-2", "manifest-3"])
         self.assertEqual(len(we._workflows["manifest-2"]._tasks), 7)
         self.assertEqual(we._workflows["manifest-2"]._parent_job.name, 
                          "wf_manifest-2")
@@ -83,7 +85,7 @@ class TestWorkflowsExtractor(unittest.TestCase):
         we.do_processing()
         
         self.assertEqual(len(we._workflows), 2)
-        self.assertEqual(we._workflows.keys(), ["manifest-2", "manifest-3"])
+        self.assertEqual(list(we._workflows.keys()), ["manifest-2", "manifest-3"])
         
         wt=we.get_workflow("manifest-3")
         t0 = wt._tasks["S0"]
@@ -91,7 +93,7 @@ class TestWorkflowsExtractor(unittest.TestCase):
         t2 = wt._tasks["S2"]
         t3 = wt._tasks["S3"]
         self.assertEqual(wt._start_task,t0)
-        self.assertEqual(wt._critical_path, [t0,t2,t3])
+        self.assertEqual(wt._critical_path, [t0,t1,t3])
         self.assertEqual(wt._critical_path_runtime, 24)           
         wt=we.get_workflow("manifest-2")
         t0 = wt._tasks["S0"]
@@ -149,12 +151,12 @@ class TestWorkflowsExtractor(unittest.TestCase):
         we.do_processing()
         
         self.assertEqual(len(we._workflows), 1)
-        self.assertEqual(we._workflows.keys(), ["floodplain.json-350"])
+        self.assertEqual(list(we._workflows.keys()), ["floodplain.json-350"])
         
         wt=we.get_workflow("floodplain.json-350")
-        print "TASKS", wt._tasks.keys()
-        print "DEPS", [t.deps for t in wt._tasks.values()]
-        print "CP", [x.name for x in wt._critical_path]
+        print("TASKS", list(wt._tasks.keys()))
+        print("DEPS", [t.deps for t in list(wt._tasks.values())])
+        print("CP", [x.name for x in wt._critical_path])
         self.assertEqual(wt.get_runtime(),117015)
         self.assertEqual(wt.get_waittime(), 9771)
         self.assertEqual(wt.get_turnaround(), 9771+117015)           
@@ -175,7 +177,7 @@ class TestWorkflowsExtractor(unittest.TestCase):
         we.do_processing()
         
         self.assertEqual(len(we._workflows), 1)
-        self.assertEqual(we._workflows.keys(), ["manifest-0"])
+        self.assertEqual(list(we._workflows.keys()), ["manifest-0"])
         
         wt=we.get_workflow("manifest-0")
         t0 = wt.get_all_tasks()[0]
@@ -500,8 +502,8 @@ class TestWorkflowsExtractor(unittest.TestCase):
         we.calculate_per_manifest_results(True, db_obj, 1)
         
         self.assertEqual(db_obj._id_count, 24)
-        self.assertEqual(db_obj._set_fields,
-            ["m_manifest2_wf_runtime_cdf", 
+        self.assertEqual(sorted(db_obj._set_fields),
+            sorted(["m_manifest2_wf_runtime_cdf", 
              "m_manifest2_wf_runtime_stats", "m_manifest2_wf_waittime_cdf",
              "m_manifest2_wf_waittime_stats", "m_manifest2_wf_turnaround_cdf", 
              "m_manifest2_wf_turnaround_stats", "m_manifest2_wf_stretch_factor_cdf", 
@@ -514,7 +516,7 @@ class TestWorkflowsExtractor(unittest.TestCase):
              "m_manifest_wf_turnaround_stats", "m_manifest_wf_stretch_factor_cdf", 
              "m_manifest_wf_stretch_factor_stats", "m_manifest_wf_jobs_runtime_cdf",
              "m_manifest_wf_jobs_runtime_stats", "m_manifest_wf_jobs_cores_cdf", 
-             "m_manifest_wf_jobs_cores_stats"])
+             "m_manifest_wf_jobs_cores_stats"]))
         self.assertEqual(db_obj._hist_count, 12)
         self.assertEqual(db_obj._stats_count, 12)
     
@@ -675,7 +677,8 @@ class TestWorkflowsExtractor(unittest.TestCase):
         
         new_we = WorkflowsExtractor()
         new_results=new_we.load_per_manifest_results(db_obj, 1)
-        self.assertEqual(new_results.keys(), ["manifest2", "manifest"])
+        self.assertEqual(sorted(list(new_results.keys())),
+                         sorted( ["manifest2", "manifest"]))
         for manifest in ["manifest2", "manifest"]:
             for field in ["wf_runtime_cdf", "wf_runtime_stats",
                  "wf_waittime_cdf",
@@ -767,13 +770,13 @@ class TestWorkflowTracker(unittest.TestCase):
         t2 = wt._tasks["S2"]
         t3 = wt._tasks["S3"]
         
-        self.assertEqual(t0.dependenciesTo, [t2,t1])
+        self.assertEqual(t0.dependenciesTo, [t1,t2])
         self.assertEqual(t1.dependenciesTo, [t3])
         self.assertEqual(t2.dependenciesTo, [t3])
         self.assertEqual(t3.dependenciesTo, [])
         
         self.assertEqual(wt._start_task,t0)
-        self.assertEqual(wt._critical_path, [t0,t2,t3])
+        self.assertEqual(wt._critical_path, [t0,t1,t3])
         self.assertEqual(wt._critical_path_runtime, 25)    
    
     def test_get_critical_path_complex(self):
@@ -796,14 +799,14 @@ class TestWorkflowTracker(unittest.TestCase):
         t4 = wt._tasks["S4"]
         t5 = wt._tasks["S5"]
         
-        self.assertEqual(t0.dependenciesTo, [t2,t1])
+        self.assertEqual(t0.dependenciesTo, [t1,t2])
         self.assertEqual(t1.dependenciesTo, [t5])
         self.assertEqual(t2.dependenciesTo, [t3])
         self.assertEqual(t3.dependenciesTo, [t4])
         self.assertEqual(t4.dependenciesTo, [t5])
         
         self.assertEqual(wt._start_task,t0)
-        self.assertEqual(wt._critical_path, [t0,t2,t3,t4, t5])
+        self.assertEqual(wt._critical_path, [t0,t1,t5])
         self.assertEqual(wt._critical_path_runtime, 50)  
 
     def test_get_critical_path_complex_more_endings(self):
@@ -829,7 +832,7 @@ class TestWorkflowTracker(unittest.TestCase):
         t6 = wt._tasks["S6"]
         wt.fill_deps()
         
-        self.assertEqual(t0.dependenciesTo, [t2,t1, t6])
+        self.assertEqual(t0.dependenciesTo, [t1,t2, t6])
         self.assertEqual(t1.dependenciesTo, [t5])
         self.assertEqual(t2.dependenciesTo, [t3])
         self.assertEqual(t3.dependenciesTo, [t4])

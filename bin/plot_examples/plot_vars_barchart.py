@@ -4,21 +4,22 @@ workflow types and different %of workflow core hours in the workload.
 Resuls are plotted as barchars that show how much the vas deviate in
 single and multi from aware.
 """
+import matplotlib
+
 from orchestration import get_central_db
-from stats.trace import ResultTrace
 from orchestration.definition import ExperimentDefinition
 from plot import (plot_multi_bars, produce_plot_config, extract_results,
-                  gen_trace_ids_exps,calculate_diffs, get_args, join_rows,
+                  gen_trace_ids_exps, calculate_diffs, get_args, join_rows,
                   replace)
+from stats.trace import ResultTrace
 
 
 # remote use no Display
-import matplotlib
 matplotlib.use('Agg')
 
 base_trace_id_percent, lim = get_args(2459, True)
-print "Base Exp", base_trace_id_percent
-print "Using analysis of limited workflows:", lim
+print("Base Exp", base_trace_id_percent)
+print("Using analysis of limited workflows:", lim)
 
 
 db_obj = get_central_db()
@@ -77,7 +78,7 @@ trace_id_colors=join_rows(
                                       group_count=5,
                                       group_size=2)
                           )
-print "IDS", trace_id_rows
+print("IDS", trace_id_rows)
 trace_id_rows=replace(trace_id_rows,
                       [2489, 2490, 2491,
                        2507, 2508, 2509,
@@ -86,9 +87,9 @@ trace_id_rows=replace(trace_id_rows,
                        2804, 2805, 2806,
                        2807, 2808, 2809])
 
-print "IDS", trace_id_rows
+print("IDS", trace_id_rows)
 
-print "COLORS", trace_id_colors
+print("COLORS", trace_id_colors)
 time_labels = ["", "5%", "", "10%", "", "25%", 
                "", "50%", "", "75%", 
                "",  "100%"]
@@ -123,7 +124,7 @@ for (name, result_type) in zip(["Turnaround speedup", "wait time(h.)",
 
     if lim:
         result_type="lim_{0}".format(result_type)
-    print "Loading: {0}".format(name)
+    print("Loading: {0}".format(name))
     factor=1.0/3600.0
     if result_type in ("wf_stretch_factor", "lim_wf_stretch_factor"):
         factor=None
@@ -137,7 +138,7 @@ for (name, result_type) in zip(["Turnaround speedup", "wait time(h.)",
     
     title="{0}".format(name)
     y_limits=(0,4)
-    print "Plotting figure"
+    print("Plotting figure")
     ref_level=1.0
     plot_multi_bars(
         name=title,

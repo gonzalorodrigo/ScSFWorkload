@@ -1,4 +1,4 @@
-from filemanager import *
+from .filemanager import *
 import datetime
 import multiprocessing as mp
 
@@ -18,7 +18,7 @@ class Log:
 			self.logFile.close()
 	@classmethod		
 	def log(self, msg):
-		print msg
+		print(msg)
 		if (self.logFile==""):
 			return
 		cad=datetime.datetime.now().isoformat("-")

@@ -11,15 +11,16 @@ Analysis focuses only on the job slow down divided in thre job ranges:
 """
 
 
+import matplotlib
+
 from orchestration import get_central_db
-from stats.trace import ResultTrace
 from orchestration.definition import ExperimentDefinition
 from plot import (plot_multi_exp_boxplot, produce_plot_config, extract_results,
                   gen_trace_ids_exps)
+from stats.trace import ResultTrace
 
 
 # remote use no Display
-import matplotlib
 matplotlib.use('Agg')
 
 
@@ -71,13 +72,13 @@ name="Slowdown"
 
 for edge in core_seconds_edges:
     edge_result_type=ResultTrace.get_result_type_edge(edge,result_type)
-    print "Loading "+edge_result_type
+    print("Loading "+edge_result_type)
     edge_plot_results = extract_results(db_obj, trace_id_rows,
                                         edge_result_type)
     edge_formated=edge_keys[edge]
     title="Jobs slowdow: {0}".format(edge_formated)
     y_limits=y_limits_dic[edge_formated]
-    print "Plotting figure"
+    print("Plotting figure")
     plot_multi_exp_boxplot(
         name=title,
         file_name=target_dir+"/percent-slow_down_jobs-{0}.png".format(

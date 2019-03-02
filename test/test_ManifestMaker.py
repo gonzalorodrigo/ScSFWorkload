@@ -143,7 +143,7 @@ class TestManifestMaker(unittest.TestCase):
         fused_jobs_dic = {"SWAN Inner North":["sin", "sin2"]}
 
         fused_deps=_fuse_deps(orig_deps, fused_jobs_dic)
-        for (key, deps) in fused_deps.iteritems():
+        for (key, deps) in fused_deps.items():
             fused_deps[key]=sorted(deps)
         self.assertEqual((fused_deps),
                         ({"son":["SWAN Inner North"],
@@ -253,14 +253,15 @@ class TestManifestMaker(unittest.TestCase):
                           "sos":["sis"]
                           }
         job_names = _get_jobs_names(jobs, deps)
+        print ("(JN", job_names)
         self.assertEqual(job_names, 
-                         {"sin": "S4",
+                         {"adcirc": "S0",
+                          "ww3": "S1",
+                          "sin": "S2",
+                          "sis": "S3",
+                          "son": "S4",
+                          "sos": "S5",
                           "adcirc2": "S6",
-                          "sos": "S3",
-                          "adcirc": "S0",
-                          "son": "S5",
-                          "sis": "S2",
-                          "ww3": "S1"
                           })     
     def test_rename_jobs(self):
         jobs = [{"id":"sin", "name":"SWAN Inner North",
@@ -386,7 +387,9 @@ class TestManifestMaker(unittest.TestCase):
                   "S3":["S5"]
                   }
         manifest_dic=_encode_manifest_dic(jobs, deps)
-        manifest_dic["tasks"] = sorted(manifest_dic["tasks"])
+        
+        manifest_dic["tasks"] = sorted(manifest_dic["tasks"],
+                                       key=lambda d: d["id"])
         self.maxDiff=None
         self.assertEqual(manifest_dic,
                          {"tasks": sorted([{"id":"S2", "name":"S2",
@@ -421,7 +424,8 @@ class TestManifestMaker(unittest.TestCase):
                           "runtime_limit":3660,
                           "runtime_sim":3600,
                           "number_of_cores":256,
-                           "execution_cmd":"./S1.py"}]),
+                           "execution_cmd":"./S1.py"}],
+                                       key=lambda d: d["id"]),
                          "resource_steps": [{"num_cores": 512,
                            "end_time":   3600},
                           {"num_cores": 256,
@@ -439,6 +443,6 @@ class TestManifestMaker(unittest.TestCase):
                           ],
                           "max_cores":512,
                           "total_runtime": float(39600+46800+14400+16200),
-                          "dot_dag":u'strict digraph "" {\n\tS2 -> S6;\n\tS3 -> S5;\n\tS0 -> S2;\n\tS0 -> S3;\n\tS0 -> S4;\n\tS0 -> S5;\n\tS4 -> S2;\n\tS5 -> S6;\n\tS1 -> S3;\n\tS1 -> S4;\n}\n'
+                          "dot_dag":'strict digraph "" {\n\tS2 -> S6;\n\tS3 -> S5;\n\tS0 -> S2;\n\tS0 -> S3;\n\tS0 -> S4;\n\tS0 -> S5;\n\tS4 -> S2;\n\tS5 -> S6;\n\tS1 -> S3;\n\tS1 -> S4;\n}\n'
                           })
         

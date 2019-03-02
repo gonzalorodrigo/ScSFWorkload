@@ -1,4 +1,4 @@
-from pattern import PatternTimer
+from .pattern import PatternTimer
 
 
 class OverloadTimeController(PatternTimer):

@@ -1,8 +1,10 @@
 
 import json
+import sys
+
 import pygraphviz as pgv
 import xml.etree.ElementTree as ET
-import sys
+
 
 def convert_xml_wf_to_json_manifest(xml_route, json_route, grouped_jobs=[],
                                     max_cores=None, namespace=None):
@@ -18,31 +20,31 @@ def convert_xml_wf_to_json_manifest(xml_route, json_route, grouped_jobs=[],
         read xml. For each job name in grouped_jobs, all jobs with the such
         name will be grouped in a single job. 
     """
-    print "Loading XML:", xml_route
+    print("Loading XML:", xml_route)
     xml_wf = ET.parse(xml_route)
-    print "XML Loaded"
+    print("XML Loaded")
     if namespace is None:
         namespace=_get_namespace(xml_wf)
-    print "Getting Jobs and dependencies"
+    print("Getting Jobs and dependencies")
     jobs, deps = _get_jobs_and_deps(xml_wf, namespace=namespace)
-    print "Jobs and dependencies extraced: {0} jobs and {1} deps".format(
-                                len(jobs), len(deps))          
+    print("Jobs and dependencies extraced: {0} jobs and {1} deps".format(
+                                len(jobs), len(deps)))          
     del xml_wf    
-    print "XML tree deallocated"
-    print "Fusing jobs"
+    print("XML tree deallocated")
+    print("Fusing jobs")
     jobs, job_fusing_dic= _fuse_jobs(jobs, grouped_jobs,
                                      max_cores=max_cores)
-    print "Fusing jobs Done", job_fusing_dic
-    print "Fusing deps", deps
+    print("Fusing jobs Done", job_fusing_dic)
+    print("Fusing deps", deps)
     deps = _fuse_deps(deps, job_fusing_dic)
-    print "Fusing deps Done", deps
-    print "Sequence fusing"
+    print("Fusing deps Done", deps)
+    print("Sequence fusing")
     _fuse_sequence_jobs(jobs, deps)
-    print "Sequence fusing Done", deps
-    print "Renaming jobs"
+    print("Sequence fusing Done", deps)
+    print("Renaming jobs")
     new_job_names=_get_jobs_names(jobs,deps)
     jobs, deps = _rename_jobs(jobs, deps, new_job_names)
-    print "Renaming jobs Done"
+    print("Renaming jobs Done")
     manifest_dic=_encode_manifest_dic(jobs, deps)
     f_out=open(json_route, "wb")
     json.dump(manifest_dic, f_out)   
@@ -68,7 +70,7 @@ def _produce_dot_graph(jobs, deps):
     G=pgv.AGraph(directed=True)
     for job in jobs:
         G.add_node(job["id"])
-    for (src, dst_list) in deps.iteritems():
+    for (src, dst_list) in deps.items():
         for dst in dst_list:
             G.add_edge(src, dst)
     return G.to_string()
@@ -88,9 +90,9 @@ def _produce_tasks(jobs):
 
 def get_inverse_deps(deps):
     inverse_deps = {}
-    for (src, dst_list) in deps.iteritems():
+    for (src, dst_list) in deps.items():
         for dst in dst_list:
-            if not dst in inverse_deps.keys():
+            if not dst in list(inverse_deps.keys()):
                 inverse_deps[dst] = []
             inverse_deps[dst].append(src)
     return inverse_deps
@@ -103,14 +105,14 @@ def _produce_resource_steps(jobs, deps):
     for job in jobs:
         job["completed"] = False
         job["src"]=[]
-        if not "dst" in job.keys():
+        if not "dst" in list(job.keys()):
             job["dst"]=[]
         
-        if job["id"] in inverse_deps.keys():
+        if job["id"] in list(inverse_deps.keys()):
             for src_job in jobs:
                 if src_job["id"] in inverse_deps[job["id"]]:
                     job["src"].append(src_job)
-                    if not "dst" in src_job.keys(): 
+                    if not "dst" in list(src_job.keys()): 
                         src_job["dst"] = []
                     src_job["dst"].append(job)
     
@@ -159,7 +161,7 @@ def _rename_jobs(jobs, deps, new_job_name):
         job["id"] = new_job_name[job["id"]]
     
     new_deps = {}
-    for (src,dst) in deps.iteritems():
+    for (src,dst) in deps.items():
         new_deps[new_job_name[src]] = [new_job_name[x] for x in dst]
     
     return jobs, new_deps
@@ -172,9 +174,9 @@ def _get_jobs_names(jobs, deps):
     with id job_id.""" 
     starting_jobs=[]
     all_dest=[]
-    for some_dep in deps.values():
+    for some_dep in list(deps.values()):
         all_dest+=some_dep
-    all_dest = list(set(all_dest))
+    all_dest = sorted(list(set(all_dest)))
     for job in jobs:
         job_id=job["id"]
         if not job_id in all_dest:
@@ -185,12 +187,12 @@ def _get_jobs_names(jobs, deps):
     while not starting_jobs == []:
         next_step_jobs=[]
         for job_id in starting_jobs:
-            if not job_id in new_ids.keys():
+            if not job_id in sorted(list(new_ids.keys())):
                 new_ids[job_id]="S{0}".format(count)
                 count+=1
-                if job_id in deps.keys():
+                if job_id in sorted(list(deps.keys())):
                     next_step_jobs+=deps[job_id]
-        next_step_jobs=list(set(next_step_jobs))
+        next_step_jobs=sorted(list(set(next_step_jobs)))
         starting_jobs=next_step_jobs
     return new_ids
 
@@ -227,7 +229,7 @@ def _get_jobs_and_deps(xml_wf, namespace=None):
         if child.tag==get_tag("job", namespace=namespace):
             atts = child.attrib
             num_cores=1
-            if "cores" in atts.keys():
+            if "cores" in list(atts.keys()):
                 num_cores=int(atts["cores"])
             jobs.append({"id": atts["id"],
                         "name": atts["name"],
@@ -273,7 +275,7 @@ def _fuse_sequence_jobs(jobs, deps):
     while not no_changes:
         no_changes=True
         inverse_deps = get_inverse_deps(deps)
-        for (job_dst,dep_list) in inverse_deps.iteritems():
+        for (job_dst,dep_list) in inverse_deps.items():
             if len(dep_list)==1:
                 job_orig=dep_list[0]
                 if (len(deps[job_orig])==1 and 
@@ -290,7 +292,7 @@ def _fuse_two_jobs_sequence(jobs, deps, job_orig, job_dst):
     the_job_orig["runtime"]+=the_job_dst["runtime"]
     jobs.remove(the_job_dst)
 
-    if job_dst in deps.keys():
+    if job_dst in list(deps.keys()):
         deps[job_orig]=deps[job_dst]
         del deps[job_dst]
     else:
@@ -300,7 +302,7 @@ def _get_job(job_list, job_id):
     for job in job_list:
         if job_id==job["id"]:
             return job
-    print "JOB not found", job_id     
+    print("JOB not found", job_id)     
     return None
 
 def extract_groups_cores(grouped_jobs, max_cores=None):
@@ -347,7 +349,7 @@ def _fuse_jobs(job_list, grouped_jobs, max_cores=None):
         job_name=job["name"]
         the_job = None
         if job_name in grouped_jobs:
-            if job_name in job_dic.keys():
+            if job_name in list(job_dic.keys()):
                 the_job=job_dic[job_name]
             if the_job is None:
                 the_job = dict(job)
@@ -365,9 +367,9 @@ def _fuse_jobs(job_list, grouped_jobs, max_cores=None):
             the_job["task_count"]+=1
         else:
             new_job_list.append(job)
-    for (job_name, the_job) in job_dic.iteritems():
+    for (job_name, the_job) in job_dic.items():
         this_max_cores=max_cores
-        if job_name in max_cores_dic.keys():
+        if job_name in list(max_cores_dic.keys()):
             this_max_cores=max_cores_dic[job_name]
         if this_max_cores:
             the_job["runtime"], the_job["cores"]=_reshape_job(the_job,
@@ -380,13 +382,13 @@ def _fuse_jobs(job_list, grouped_jobs, max_cores=None):
 def _fuse_deps(dep_dic, job_fusing_dic):
     """Fuses dependencies according to the fuse map in job_fusing_dic."""    
     inverse_fusing_dic={}
-    for (new_dep, older_deps) in job_fusing_dic.iteritems():
+    for (new_dep, older_deps) in job_fusing_dic.items():
         for dep in older_deps:
             inverse_fusing_dic[dep] = new_dep
     
     new_dep_dict={}
     # first transform the sources and join the dest
-    for (source, dest) in dep_dic.iteritems():
+    for (source, dest) in dep_dic.items():
         new_dest=[]
         for one_dest in dest:
             try:

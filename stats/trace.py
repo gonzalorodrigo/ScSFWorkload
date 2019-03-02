@@ -2,11 +2,12 @@
 This package incldues a number of classes to import and manipulate
 scheduling log traces.
 """
-import numpy as np
-
+from commonLib.nerscUtilization import UtilizationEngine
 from stats import (calculate_results, load_results, NumericList)
 from stats.workflow import WorkflowsExtractor
-from commonLib.nerscUtilization import UtilizationEngine
+
+import numpy as np
+
 
 class ResultTrace(object):
     """ This class stores scheduling simulation result traces. It is designed to
@@ -45,8 +46,8 @@ class ResultTrace(object):
         duplicates = db_obj.getValuesAsColumns(
                             table_name, ["id_job", "dup", "inx"],
                             theQuery=query)
-        print "Cleaning duplicated entries"
-        print "Duplicated entries before:", len(duplicates["id_job"])
+        print("Cleaning duplicated entries")
+        print("Duplicated entries before:", len(duplicates["id_job"]))
         for (id_job, job_db_inx) in zip(duplicates["id_job"],duplicates["inx"]):
             query = """DELETE FROM `{0}` 
                        WHERE `id_job`={1} and `job_db_inx`!={2}
@@ -55,7 +56,7 @@ class ResultTrace(object):
         duplicates = db_obj.getValuesAsColumns(
                             table_name, ["id_job", "dup", "inx"],
                             theQuery=query)
-        print "Duplicated entries after:", len(duplicates["id_job"])
+        print("Duplicated entries after:", len(duplicates["id_job"]))
         
     
     def import_from_db(self, db_obj, table_name, start=None, end=None):
@@ -118,7 +119,7 @@ class ResultTrace(object):
         slurm_list = {}
         for field in self._fields:
             slurm_list[field] = []
-        job_count = len(pbs_list.values()[0])
+        job_count = len(list(pbs_list.values())[0])
         slurm_list["account"] = pbs_list["account"]
         slurm_list["job_name"] = pbs_list["jobname"]
         slurm_list["partition"] = pbs_list["class"]
@@ -126,7 +127,7 @@ class ResultTrace(object):
         slurm_list["time_start"] = pbs_list["start"]
         slurm_list["time_end"] = pbs_list["completion"]
         slurm_list["nodes_alloc"] = pbs_list["numnodes"]
-        slurm_list["timelimit"] = [x/60 for x in 
+        slurm_list["timelimit"] = [int(x/60) for x in 
                                     pbs_list["wallclock_requested"]]
         fake_ids=[3 for x in pbs_list["wallclock_requested"]]
         slurm_list["id_qos"] =  fake_ids
@@ -138,7 +139,7 @@ class ResultTrace(object):
         slurm_list["cpus_req"] = [x*y for (x,y) in zip(pbs_list["numnodes"],
                                                     pbs_list["cores_per_node"])]
         slurm_list["cpus_alloc"] = slurm_list["cpus_req"]
-        slurm_list["job_db_inx"] = range(job_count)
+        slurm_list["job_db_inx"] = list(range(job_count))
         slurm_list["id_job"] = slurm_list["job_db_inx"] 
         
         return slurm_list
@@ -218,13 +219,13 @@ class ResultTrace(object):
     def join_dics_of_lists(self, dic1, dic2):
         """ Returns a new dictionary: joins two dictionaries of lists """
         new_dic = {}
-        keys = dic1.keys()+dic2.keys()
+        keys = list(dic1.keys())+list(dic2.keys())
         keys = list(set(keys))
         for key in keys:
             new_dic[key]=[]
-            if key in dic1.keys():
+            if key in list(dic1.keys()):
                 new_dic[key]+=dic1[key]
-            if key in dic2.keys():
+            if key in list(dic2.keys()):
                 new_dic[key]+=dic2[key]
         return new_dic
         
@@ -286,7 +287,7 @@ class ResultTrace(object):
     
     def get_grouped_result(self, core_seconds_edge, result_type):
         key=ResultTrace.get_result_type_edge(core_seconds_edge, result_type)
-        if key in self.jobs_results.keys():
+        if key in list(self.jobs_results.keys()):
             return self.jobs_results[key]
         return None
 
@@ -453,7 +454,7 @@ class ResultTrace(object):
         for (timelimit, cpus_alloc, i) in zip(
                             self._lists_submit["timelimit"],
                             self._lists_submit["cpus_alloc"],
-                            range(len(self._lists_submit["timelimit"]))):
+                            list(range(len(self._lists_submit["timelimit"])))):
             edge = self._get_index_in_core_seconds_list(timelimit*60,
                                                         cpus_alloc,
                                                         core_seconds_edges)
@@ -536,8 +537,8 @@ class ResultTrace(object):
         if not append:
             self._data_list_of_dics=[{} for x in range(len(data_list_of_dics))]
         for (l1, l2) in zip(self._data_list_of_dics, data_list_of_dics):
-            for key in l2.keys():
-                if not key in l1.keys():
+            for key in list(l2.keys()):
+                if not key in list(l1.keys()):
                     l1[key]=[]
                 l1[key]+=l2[key]
         results = {}
@@ -885,7 +886,7 @@ class ResultTrace(object):
                 jobs_timelimit, 
                 mean_accuracy, median_accuracy) = self._get_job_wait_info_all()
                 
-        print "Observed accuracy:", mean_accuracy, median_accuracy
+        print("Observed accuracy:", mean_accuracy, median_accuracy)
         accuracy = mean_accuracy
         wait_ch_events = {}
         wait_requested_ch_events = {}
@@ -929,13 +930,13 @@ class ResultTrace(object):
                 previous_stamp=submit_time
             # Values for the waiting work
             if submit_time>0:
-                if not submit_time in wait_ch_events.keys():
+                if not submit_time in list(wait_ch_events.keys()):
                     wait_ch_events[submit_time]=0
                     wait_requested_ch_events[submit_time]=0
                 wait_ch_events[submit_time]+=core_h
                 wait_requested_ch_events[submit_time]+=requested_core_h
             if start_time>0:
-                if not start_time in wait_ch_events.keys():
+                if not start_time in list(wait_ch_events.keys()):
                     wait_ch_events[start_time]=0
                     wait_requested_ch_events[start_time]=0
                 wait_ch_events[start_time]-=core_h
@@ -1023,11 +1024,11 @@ class ResultTrace(object):
                 previous_stamp=submit_time
             # Values for the waiting work
             if submit_time!=0:
-                if not submit_time in wait_ch_events.keys():
+                if not submit_time in list(wait_ch_events.keys()):
                     wait_ch_events[submit_time]=0
                 wait_ch_events[submit_time]+=core_h
             if start_time!=0:
-                if not start_time in wait_ch_events.keys():
+                if not start_time in list(wait_ch_events.keys()):
                     wait_ch_events[start_time]=0
                 wait_ch_events[start_time]-=core_h
         

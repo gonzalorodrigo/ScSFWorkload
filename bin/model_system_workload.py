@@ -69,9 +69,9 @@ edison = Edison()
 
 start=datetime.date(2015, 1, 1)
 end=datetime.date(2015, 12, 31)
-print "Loading workload trace and generating model..."
+print("Loading workload trace and generating model...")
 edison.load_from_db(start, end, db_is_local)
-print "Saving model..."
+print("Saving model...")
 # Will save the model as 2015-edison
 edison.save_to_file("./data", "2015")
-print "DONE"
+print("DONE")

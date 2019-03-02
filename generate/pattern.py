@@ -260,7 +260,7 @@ class WorkflowGeneratorMultijobs(WorkflowGenerator):
         if len(task["dependencyFrom"])==0:
             return True
         for task_dep in task["dependencyFrom"]:
-            if not "job_id" in task_dep.keys():
+            if not "job_id" in list(task_dep.keys()):
                 return False
         return True
     def _gen_deps(self, task): 
@@ -282,7 +282,7 @@ class WorkflowGeneratorMultijobs(WorkflowGenerator):
         runtime  = manifest["total_runtime"]
         tasks = manifest["tasks"]
         tasks = {x["id"]: x for x in tasks}
-        for task in tasks.values():
+        for task in list(tasks.values()):
             task["dependencyFrom"] = []
             task["dependencyTo"] = []
         dot_graph = pgv.AGraph(string=manifest["dot_dag"])
